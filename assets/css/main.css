@@ -529,6 +529,64 @@ a {
   color: #d8ecff;
 }
 
+body.editorial .quick-points {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+body.editorial .quick-point {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(106, 156, 208, 0.22);
+}
+
+body.editorial .quick-point strong {
+  font-size: 0.82rem;
+}
+
+body.editorial .glass-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0.85rem 0;
+}
+
+body.editorial .glass-card::after {
+  display: none;
+}
+
+body.editorial .glass-card.is-hovered {
+  border-color: transparent;
+}
+
+body.editorial .cards-3,
+body.editorial .glass-grid,
+body.editorial .kpi-grid {
+  gap: 0.45rem;
+}
+
+body.editorial .cards-3 .glass-card,
+body.editorial .glass-grid .glass-card,
+body.editorial .kpi-grid .glass-card,
+body.editorial .detail-spaced.glass-card {
+  border-top: 1px solid rgba(106, 156, 208, 0.24);
+}
+
+body.editorial .cards-3 .glass-card:last-child,
+body.editorial .glass-grid .glass-card:last-child,
+body.editorial .kpi-grid .glass-card:last-child {
+  border-bottom: 1px solid rgba(106, 156, 208, 0.24);
+}
+
+body.editorial .cap-card,
+body.editorial .project-card,
+body.editorial .kpi-card {
+  min-height: auto;
+}
+
 section {
   padding: 4.65rem 0;
   position: relative;

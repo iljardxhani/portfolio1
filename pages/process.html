@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="../assets/css/main.css" />
   </head>
-  <body>
+  <body class="editorial">
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
 
@@ -40,8 +40,8 @@
             <p class="eyebrow">Engineering Process</p>
             <h1>A Repeatable Flow For Shipping AI Features.</h1>
             <p class="lede">
-              Every project follows the same evaluation-first lifecycle: scope, implement, measure, then release.
-              This consistency is what allows teams to move fast without losing reliability.
+              Every project follows the same evaluation-first lifecycle: scope, implement, measure, and
+              only then release.
             </p>
           </div>
         </div>
@@ -49,8 +49,8 @@
 
       <section>
         <div class="container">
-          <div class="process-layout">
-            <div class="glass-card reveal">
+          <div class="process-surface">
+            <div class="process-column reveal">
               <div class="timeline" id="process-timeline">
                 <span class="timeline-focus" aria-hidden="true"></span>
                 <article class="timeline-item active" data-step="1">
@@ -76,7 +76,7 @@
                 </article>
               </div>
             </div>
-            <aside class="glass-card terminal-card reveal">
+            <aside class="terminal-card terminal-card-flat reveal">
               <div class="terminal-head">
                 <p class="section-kicker">Runtime Trace</p>
                 <span class="status live">Pipeline</span>
@@ -114,18 +114,27 @@
             <p class="section-kicker">Release Standards</p>
             <h2>Quality Gates Before Production</h2>
           </div>
-          <div class="cards-3">
-            <article class="glass-card reveal">
-              <h3>Answer Quality</h3>
-              <p>Faithfulness, relevance, and structured-output validity from curated benchmark datasets.</p>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>Answer Quality</h3>
+                <p>Faithfulness, relevance, and structured-output validity from curated benchmark datasets.</p>
+              </div>
+              <p class="cap-meta">Quality Metric Gate</p>
             </article>
-            <article class="glass-card reveal">
-              <h3>Operational Health</h3>
-              <p>Latency budgets, failure-rate thresholds, and fallback behavior under degraded conditions.</p>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Operational Health</h3>
+                <p>Latency budgets, failure-rate thresholds, and fallback behavior under degraded conditions.</p>
+              </div>
+              <p class="cap-meta">Latency + Failure SLO</p>
             </article>
-            <article class="glass-card reveal">
-              <h3>Regression Safety</h3>
-              <p>No release without automated comparison against previous baseline performance.</p>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Regression Safety</h3>
+                <p>No release without automated comparison against previous baseline performance.</p>
+              </div>
+              <p class="cap-meta">CI/CD Gate</p>
             </article>
           </div>
         </div>

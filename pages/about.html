@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="../assets/css/main.css" />
   </head>
-  <body>
+  <body class="editorial">
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
 
@@ -40,9 +40,14 @@
             <p class="eyebrow">About</p>
             <h1>AI Application Engineering With Product Discipline.</h1>
             <p class="lede">
-              I focus on practical AI delivery: systems that answer correctly, degrade safely, and are observable
-              in production. I optimize for trust, latency, and measurable outcomes.
+              I build systems where answers are useful, grounded, and observable in production.
+              The focus is not demo quality, but release quality.
             </p>
+            <ul class="hero-bullets reveal">
+              <li><strong>Design Principle:</strong> define the data and reliability contract before prompt tuning.</li>
+              <li><strong>Build Principle:</strong> deterministic interfaces around LLM behavior.</li>
+              <li><strong>Release Principle:</strong> evaluate, compare, and ship only behind quality gates.</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -50,24 +55,30 @@
       <section>
         <div class="container">
           <div class="section-head reveal">
-            <p class="section-kicker">Capabilities</p>
+            <p class="section-kicker">What I Bring</p>
             <h2>Core Strengths</h2>
           </div>
-          <div class="cards-3">
-            <article class="glass-card reveal cap-card">
-              <h3>RAG and Retrieval Quality</h3>
-              <p>Chunking strategies, embeddings, hybrid retrieval, source citations, and relevance diagnostics.</p>
-              <span class="cap-meta">RAG Architecture · Search Quality</span>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>RAG and Retrieval Quality</h3>
+                <p>Chunking strategies, hybrid retrieval, reranking, and citation-grounded response patterns.</p>
+              </div>
+              <p class="cap-meta">RAG Architecture · Search Quality</p>
             </article>
-            <article class="glass-card reveal cap-card">
-              <h3>LLM Workflow Engineering</h3>
-              <p>Prompt contracts, function-calling, fallback behavior, and deterministic API outputs.</p>
-              <span class="cap-meta">Tool Calling · FastAPI · Automation</span>
+            <article class="capability-item reveal">
+              <div>
+                <h3>LLM Workflow Engineering</h3>
+                <p>Prompt contracts, function-calling, fallback behavior, and stable API outputs for apps.</p>
+              </div>
+              <p class="cap-meta">Tool Calling · FastAPI · Automation</p>
             </article>
-            <article class="glass-card reveal cap-card">
-              <h3>Evaluation and Reliability</h3>
-              <p>Regression suites, faithfulness tracking, trace-based debugging, and production safeguards.</p>
-              <span class="cap-meta">Evals · Observability · Release Gates</span>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Evaluation and Reliability</h3>
+                <p>Regression suites, faithfulness tracking, and trace-based debugging in pre-release workflows.</p>
+              </div>
+              <p class="cap-meta">Evals · Observability · Release Gates</p>
             </article>
           </div>
         </div>
@@ -79,9 +90,10 @@
             <p class="section-kicker">Stack</p>
             <h2>Technologies I Use Most</h2>
           </div>
-          <div class="glass-grid">
-            <article class="glass-card reveal">
+          <div class="story-grid">
+            <article class="story-block reveal">
               <h3>Application Layer</h3>
+              <p>Python-based API and workflow systems for shipping product features quickly.</p>
               <div class="token-row">
                 <span class="token">Python</span>
                 <span class="token">FastAPI</span>
@@ -90,16 +102,20 @@
                 <span class="token">Docker</span>
               </div>
             </article>
-            <article class="glass-card reveal">
-              <h3>Data and AI Layer</h3>
+            <article class="story-block reveal">
+              <h3>Data + AI Layer</h3>
+              <p>Storage, retrieval, orchestration, and evaluation tooling required for production reliability.</p>
               <div class="token-row">
                 <span class="token">Postgres</span>
                 <span class="token">pgvector</span>
                 <span class="token">OpenAI APIs</span>
                 <span class="token">Reranking</span>
-                <span class="token">Evaluation Harnesses</span>
+                <span class="token">Eval Harnesses</span>
               </div>
             </article>
+          </div>
+          <div class="hero-actions home-gallery-cta reveal">
+            <a class="btn primary" href="./projects/index.html">Open Project Gallery</a>
           </div>
         </div>
       </section>
