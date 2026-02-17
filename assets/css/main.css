@@ -351,6 +351,184 @@ a {
   margin-top: 1.25rem;
 }
 
+.hero-bullets {
+  list-style: none;
+  margin: 1.65rem auto 0;
+  max-width: 760px;
+  text-align: left;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.hero-bullets li {
+  color: var(--muted);
+  line-height: 1.6;
+  padding: 0.62rem 0 0.72rem;
+  border-bottom: 1px solid rgba(106, 156, 208, 0.22);
+}
+
+.hero-bullets strong {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--teal);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.story-grid {
+  margin-top: 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.2rem;
+}
+
+.story-block {
+  padding: 0.35rem 0 0.65rem;
+}
+
+.story-block h3 {
+  font-size: 1.32rem;
+}
+
+.story-block p {
+  margin-top: 0.55rem;
+  color: var(--muted);
+  line-height: 1.66;
+}
+
+.story-block + .story-block {
+  border-left: 1px solid rgba(106, 156, 208, 0.2);
+  padding-left: 1.4rem;
+}
+
+.capability-list {
+  margin-top: 0.4rem;
+}
+
+.capability-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.2rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(106, 156, 208, 0.22);
+}
+
+.capability-item:last-child {
+  border-bottom: 1px solid rgba(106, 156, 208, 0.22);
+}
+
+.capability-item h3 {
+  font-size: 1.2rem;
+}
+
+.capability-item p {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.capability-item .cap-meta {
+  margin-top: 0.12rem;
+  white-space: nowrap;
+}
+
+.project-strips {
+  margin-top: 0.35rem;
+}
+
+.project-strip {
+  display: block;
+  text-decoration: none;
+  padding: 1rem 0.2rem;
+  border-top: 1px solid rgba(106, 156, 208, 0.24);
+  transition: transform 0.22s ease;
+}
+
+.project-strip:last-child {
+  border-bottom: 1px solid rgba(106, 156, 208, 0.24);
+}
+
+.project-strip:hover {
+  transform: translateX(8px);
+}
+
+.project-strip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.project-strip h3 {
+  font-size: 1.24rem;
+}
+
+.project-strip p {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.process-surface {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  gap: 1.3rem;
+  align-items: stretch;
+}
+
+.process-column {
+  padding-right: 0.35rem;
+}
+
+.process-column .timeline {
+  margin-top: 0.2rem;
+}
+
+.terminal-card-flat {
+  border: 1px solid rgba(98, 152, 205, 0.28);
+  border-radius: var(--radius);
+  background: rgba(4, 10, 18, 0.46);
+  padding: 1.3rem;
+  box-shadow: var(--shadow);
+}
+
+.contact-band {
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 2rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(106, 156, 208, 0.22);
+}
+
+.contact-intro p {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+.contact-actions-inline {
+  justify-content: flex-start;
+  margin-top: 1.15rem;
+}
+
+.contact-links-plain {
+  display: grid;
+  align-content: start;
+  gap: 0.52rem;
+}
+
+.contact-links-plain a {
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed rgba(106, 156, 208, 0.28);
+  transition: color 0.22s ease;
+}
+
+.contact-links-plain a:hover {
+  color: #d8ecff;
+}
+
 section {
   padding: 4.65rem 0;
   position: relative;
@@ -962,6 +1140,23 @@ a.project-card {
 }
 
 @media (max-width: 1040px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .story-block + .story-block {
+    border-left: 0;
+    border-top: 1px solid rgba(106, 156, 208, 0.2);
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+
+  .capability-item {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
   .cards-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -981,6 +1176,15 @@ a.project-card {
   .pattern-row,
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .process-surface {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-band {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
   }
 
   .process-layout {
@@ -1038,6 +1242,20 @@ a.project-card {
 
   .hero-panel {
     margin-top: 5rem;
+  }
+
+  .hero-bullets {
+    margin-top: 1.25rem;
+  }
+
+  .project-strip-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .capability-item .cap-meta {
+    white-space: normal;
   }
 
   .glass-grid,
