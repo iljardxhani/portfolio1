@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini SaaS: RAG for Teams | Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+    <header class="site-header"><div class="container">
+      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+      </nav>
+      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+    </div></header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact"><div class="container"><div class="hero-panel hero-panel-left reveal">
+        <p class="eyebrow">Case Study · SaaS</p>
+        <h1>Mini SaaS: RAG for Teams</h1>
+        <p class="lede">Multi-tenant AI product with users/orgs, test billing flow, per-tenant limits, audit logs, and a minimal admin panel.</p>
+        <div class="quick-points">
+          <div class="quick-point"><strong>Problem</strong><span>Most AI demos ignore platform concerns needed for real SaaS adoption.</span></div>
+          <div class="quick-point"><strong>Solution</strong><span>Add tenancy, usage controls, and governance around a RAG core.</span></div>
+          <div class="quick-point"><strong>Impact</strong><span>Demonstrates end-to-end product ownership beyond model calls.</span></div>
+        </div>
+      </div></div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Product Systems</h2></div>
+        <div class="cards-3">
+          <article class="glass-card reveal"><h3>Identity + Tenancy</h3><p>User/org boundaries, role-based permissions, and workspace-specific data isolation.</p></article>
+          <article class="glass-card reveal"><h3>Billing + Quotas</h3><p>Stripe test flow, request quotas, and plan-aware rate limiting for API endpoints.</p></article>
+          <article class="glass-card reveal"><h3>Governance</h3><p>Audit logs, admin monitoring, and request trace history for operational review.</p></article>
+        </div>
+      </div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Evidence</p><h2>Platform Readiness</h2></div>
+        <div class="kpi-grid">
+          <article class="glass-card reveal kpi-card"><h3>Tenant Isolation</h3><p>Tests ensure no cross-org retrieval leakage.</p></article>
+          <article class="glass-card reveal kpi-card"><h3>Rate Limit Control</h3><p>Per-plan throttling measured under burst traffic.</p></article>
+          <article class="glass-card reveal kpi-card"><h3>Audit Coverage</h3><p>Track auth events, retrieval calls, and admin actions.</p></article>
+        </div>
+        <article class="glass-card reveal detail-spaced">
+          <h3>Delivery Stack</h3>
+          <div class="token-row"><span class="token">FastAPI</span><span class="token">Postgres</span><span class="token">Stripe Test</span><span class="token">RBAC</span><span class="token">Admin Panel</span></div>
+          <p class="path-note">Presentation path: <code>projects/rag-for-teams-saas/presentations/upcoming/</code></p>
+        </article>
+      </div></section>
+    </main>
+
+    <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
+    <script src="../../assets/js/main.js" defer></script>
+  </body>
+</html>

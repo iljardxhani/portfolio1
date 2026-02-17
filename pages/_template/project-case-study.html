@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Name | Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="../../portfolio.html">
+          <span class="brand-mark"></span>
+          <span>Iljard <strong>Xhani</strong> · AI Engineering</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="../../portfolio.html">Home</a>
+          <a href="../projects/index.html" aria-current="page">Projects</a>
+          <a href="../process.html">Process</a>
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+        </nav>
+        <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact">
+        <div class="container">
+          <div class="hero-panel hero-panel-left reveal">
+            <p class="eyebrow">Case Study · Domain</p>
+            <h1>Project Name</h1>
+            <p class="lede">One-paragraph summary describing user problem, system direction, and expected impact.</p>
+            <div class="quick-points">
+              <div class="quick-point"><strong>Problem</strong><span>What is broken today.</span></div>
+              <div class="quick-point"><strong>Solution</strong><span>What architecture you implemented.</span></div>
+              <div class="quick-point"><strong>Impact</strong><span>How quality/speed/reliability improved.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>System Design</h2></div>
+          <div class="cards-3">
+            <article class="glass-card reveal"><h3>Component 1</h3><p>Describe responsibility and data flow.</p></article>
+            <article class="glass-card reveal"><h3>Component 2</h3><p>Describe responsibility and data flow.</p></article>
+            <article class="glass-card reveal"><h3>Component 3</h3><p>Describe responsibility and data flow.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal"><p class="section-kicker">Evidence</p><h2>Evaluation and Reliability</h2></div>
+          <div class="kpi-grid">
+            <article class="glass-card reveal kpi-card"><h3>Metric A</h3><p>How you measure it.</p></article>
+            <article class="glass-card reveal kpi-card"><h3>Metric B</h3><p>How you measure it.</p></article>
+            <article class="glass-card reveal kpi-card"><h3>Metric C</h3><p>How you measure it.</p></article>
+          </div>
+          <article class="glass-card reveal detail-spaced">
+            <h3>Operational Notes</h3>
+            <ul class="proof-list">
+              <li>Regression gate strategy.</li>
+              <li>Failure-mode handling strategy.</li>
+              <li>Monitoring and release strategy.</li>
+            </ul>
+            <p class="path-note">Presentation path: <code>projects/&lt;project-slug&gt;/presentations/upcoming/</code></p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p>
+    </footer>
+
+    <script src="../../assets/js/main.js" defer></script>
+  </body>
+</html>

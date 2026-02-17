@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Support AI Triage | Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+    <header class="site-header"><div class="container">
+      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+      </nav>
+      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+    </div></header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact"><div class="container"><div class="hero-panel hero-panel-left reveal">
+        <p class="eyebrow">Case Study · Automation</p>
+        <h1>Customer Support AI Triage (n8n + FastAPI)</h1>
+        <p class="lede">Incoming email/DM classification, AI draft response, ticket creation, audit logging, and mandatory human approval before sending.</p>
+        <div class="quick-points">
+          <div class="quick-point"><strong>Problem</strong><span>Support queues are slow and inconsistent across channels.</span></div>
+          <div class="quick-point"><strong>Solution</strong><span>Event-driven triage pipeline with SLA-aware routing.</span></div>
+          <div class="quick-point"><strong>Impact</strong><span>Faster first response while preserving human control.</span></div>
+        </div>
+      </div></div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Workflow Design</h2></div>
+        <div class="cards-3">
+          <article class="glass-card reveal"><h3>Ingress</h3><p>Email/DM connectors trigger n8n flows and normalize payloads for API processing.</p></article>
+          <article class="glass-card reveal"><h3>Triage Logic</h3><p>LLM classifier marks urgency, topic, and confidence, then assigns routing policy.</p></article>
+          <article class="glass-card reveal"><h3>Response + Ticketing</h3><p>Draft response generated, ticket written to system, and approval queue created for agents.</p></article>
+        </div>
+      </div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Evidence</p><h2>Reliability Controls</h2></div>
+        <div class="glass-grid">
+          <article class="glass-card reveal"><h3>Human-in-the-Loop</h3><p>No outbound response without explicit approval action.</p></article>
+          <article class="glass-card reveal"><h3>Auditability</h3><p>Every decision and generated draft is logged with timestamp and actor metadata.</p></article>
+        </div>
+        <article class="glass-card reveal detail-spaced">
+          <h3>Operational Checks</h3>
+          <ul class="proof-list">
+            <li>Retry and dead-letter handling for connector failures.</li>
+            <li>Priority SLA alerts for urgent cases.</li>
+            <li>Fallback template when model confidence is low.</li>
+          </ul>
+          <p class="path-note">Presentation path: <code>projects/support-ai-triage/presentations/upcoming/</code></p>
+        </article>
+      </div></section>
+    </main>
+
+    <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
+    <script src="../../assets/js/main.js" defer></script>
+  </body>
+</html>

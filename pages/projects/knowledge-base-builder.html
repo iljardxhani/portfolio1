@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knowledge Base Builder | Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+    <header class="site-header"><div class="container">
+      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+      </nav>
+      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+    </div></header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact"><div class="container"><div class="hero-panel hero-panel-left reveal">
+        <p class="eyebrow">Case Study · Ingestion Pipeline</p>
+        <h1>Knowledge Base Builder</h1>
+        <p class="lede">A dedicated ingestion service that takes PDF/URL/markdown sources, normalizes and versions content, then triggers automatic re-indexing schedules.</p>
+        <div class="quick-points">
+          <div class="quick-point"><strong>Problem</strong><span>Knowledge goes stale and indexing quality varies by source type.</span></div>
+          <div class="quick-point"><strong>Solution</strong><span>Unified ingestion contract with versioned indexing pipeline.</span></div>
+          <div class="quick-point"><strong>Impact</strong><span>Reliable freshness and reproducible retrieval behavior.</span></div>
+        </div>
+      </div></div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Pipeline Components</h2></div>
+        <div class="cards-3">
+          <article class="glass-card reveal"><h3>Source Connectors</h3><p>Adapters for PDF, URL, and markdown with metadata capture and deduplication.</p></article>
+          <article class="glass-card reveal"><h3>Normalization + Versioning</h3><p>Clean text and persist version snapshots to support rollback and diff analysis.</p></article>
+          <article class="glass-card reveal"><h3>Scheduler + Re-index</h3><p>Cron/queue orchestration for periodic updates and selective re-embedding.</p></article>
+        </div>
+      </div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Evidence</p><h2>Operational Reliability</h2></div>
+        <div class="glass-grid">
+          <article class="glass-card reveal"><h3>Freshness Tracking</h3><p>Source update timestamps compared against active index version.</p></article>
+          <article class="glass-card reveal"><h3>Failure Recovery</h3><p>Failed jobs isolated per source and retried with backoff and error categorization.</p></article>
+        </div>
+        <article class="glass-card reveal detail-spaced">
+          <h3>Delivery Notes</h3>
+          <div class="token-row"><span class="token">Queue Worker</span><span class="token">Version Table</span><span class="token">Scheduled Jobs</span><span class="token">Index Health Checks</span></div>
+          <p class="path-note">Presentation path: <code>projects/knowledge-base-builder/presentations/upcoming/</code></p>
+        </article>
+      </div></section>
+    </main>
+
+    <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
+    <script src="../../assets/js/main.js" defer></script>
+  </body>
+</html>

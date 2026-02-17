@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iljard Xhani | AI Application Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="portfolio.html">
+          <span class="brand-mark"></span>
+          <span>Iljard <strong>Xhani</strong> · AI Engineering</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="portfolio.html" aria-current="page">Home</a>
+          <a href="pages/projects/index.html">Projects</a>
+          <a href="pages/process.html">Process</a>
+          <a href="pages/about.html">About</a>
+          <a href="pages/contact.html">Contact</a>
+        </nav>
+        <a class="btn small primary" href="prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="hero page-hero">
+        <div class="container">
+          <div class="hero-panel reveal">
+            <p class="eyebrow">AI Application Engineer · LLM + RAG + Reliability</p>
+            <h1>
+              Building AI Products
+              <span class="accent">That Survive Production</span>
+            </h1>
+            <p class="lede">
+              This home page gives a quick overview of everything: who I am, what I build, how I ship,
+              and which projects demonstrate production-level AI engineering.
+            </p>
+            <div class="hero-actions">
+              <a class="btn primary" href="pages/projects/index.html">Open Project Gallery</a>
+              <a class="btn ghost" href="pages/contact.html">Open to Interviews</a>
+            </div>
+            <div class="quick-points">
+              <div class="quick-point">
+                <strong>Production RAG</strong>
+                <span>Ingestion, chunking, retrieval, citations, and history.</span>
+              </div>
+              <div class="quick-point">
+                <strong>Evaluation First</strong>
+                <span>Faithfulness, regression gates, and trace-based debugging.</span>
+              </div>
+              <div class="quick-point">
+                <strong>Applied Systems</strong>
+                <span>FastAPI, n8n, SQL tools, auth, limits, and auditability.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">About Snapshot</p>
+            <h2>From Prompt to Production, End to End.</h2>
+            <p>
+              I focus on practical AI systems: useful answers, measurable quality, and safe delivery workflows.
+            </p>
+          </div>
+          <div class="glass-grid">
+            <article class="glass-card reveal">
+              <h3>What I Deliver</h3>
+              <p>
+                AI features that connect model APIs, retrieval stacks, and business workflows into one
+                reliable product surface.
+              </p>
+              <div class="token-row">
+                <span class="token">FastAPI</span>
+                <span class="token">Python</span>
+                <span class="token">Postgres + pgvector</span>
+                <span class="token">Docker</span>
+              </div>
+            </article>
+            <article class="glass-card reveal">
+              <h3>How I Work</h3>
+              <p>
+                I prioritize evaluation and observability so teams can ship quickly without compromising
+                trust or system behavior.
+              </p>
+              <div class="token-row">
+                <span class="token">Tracing</span>
+                <span class="token">Regression Evals</span>
+                <span class="token">Latency Budgets</span>
+                <span class="token">Guardrails</span>
+              </div>
+            </article>
+          </div>
+          <div class="hero-actions home-gallery-cta reveal">
+            <a class="btn ghost" href="pages/about.html">Read Full About Page</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Capabilities Snapshot</p>
+            <h2>Core Areas for AI Application Engineering.</h2>
+          </div>
+          <div class="cards-3">
+            <article class="glass-card cap-card reveal">
+              <h3>RAG Architecture</h3>
+              <p>Multi-source ingestion, chunking strategy, retrieval tuning, and citation-grounded answers.</p>
+              <span class="cap-meta">Pipeline Design · Retrieval Quality</span>
+            </article>
+            <article class="glass-card cap-card reveal">
+              <h3>LLM App Layer</h3>
+              <p>Prompt routing, tool invocation, schema-constrained outputs, and deterministic interfaces.</p>
+              <span class="cap-meta">Prompting · Tool Calling · APIs</span>
+            </article>
+            <article class="glass-card cap-card reveal">
+              <h3>Evaluation + Ops</h3>
+              <p>Offline and online eval loops, observability, and release checks before production rollout.</p>
+              <span class="cap-meta">Evals · Monitoring · Reliability</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Projects Snapshot</p>
+            <h2>Case Studies Aligned With Real AI Product Hiring.</h2>
+            <p>
+              Six structured projects covering RAG, evaluation, automation, hybrid agents, ingestion systems,
+              and SaaS architecture.
+            </p>
+          </div>
+          <div class="cards-3">
+            <a class="glass-card project-card reveal" href="pages/projects/docchat-rag-production.html">
+              <div class="project-top">
+                <span class="status live">RAG</span>
+                <span class="status">Production</span>
+              </div>
+              <h3>DocChat RAG</h3>
+              <p>Upload docs, retrieve accurately, answer with citations, and maintain conversation history.</p>
+              <div class="project-foot">Open case study →</div>
+            </a>
+            <a class="glass-card project-card reveal" href="pages/projects/rag-evaluation-lab.html">
+              <div class="project-top">
+                <span class="status">Evaluation</span>
+                <span class="status">Regression</span>
+              </div>
+              <h3>RAG Evaluation Lab</h3>
+              <p>Automated quality reports and regression testing so updates do not degrade answer quality.</p>
+              <div class="project-foot">Open case study →</div>
+            </a>
+            <a class="glass-card project-card reveal" href="pages/projects/rag-for-teams-saas.html">
+              <div class="project-top">
+                <span class="status live">SaaS</span>
+                <span class="status">Job Magnet</span>
+              </div>
+              <h3>RAG for Teams</h3>
+              <p>Multi-tenant SaaS architecture with auth, billing flow, rate limits, and auditability.</p>
+              <div class="project-foot">Open case study →</div>
+            </a>
+          </div>
+          <div class="hero-actions home-gallery-cta reveal">
+            <a class="btn primary" href="pages/projects/index.html">See Full Gallery (6 Projects)</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head process-head reveal">
+            <p class="section-kicker">Process Snapshot</p>
+            <h2>Build Flow I Use for AI Features.</h2>
+            <p>A condensed view of scope, implementation, and evaluation before release.</p>
+          </div>
+          <div class="process-layout">
+            <div class="glass-card reveal">
+              <div class="timeline" id="process-timeline">
+                <span class="timeline-focus" aria-hidden="true"></span>
+                <article class="timeline-item active" data-step="1">
+                  <h3 class="timeline-head">1. Scope + Retrieval Strategy</h3>
+                  <p class="timeline-meta">Use-case · Data Contract · Success Metric</p>
+                  <p class="timeline-copy">
+                    Define user questions, source-of-truth data, and measurable targets before prompt changes.
+                  </p>
+                </article>
+                <article class="timeline-item" data-step="2">
+                  <h3 class="timeline-head">2. Build LLM + Tooling Layer</h3>
+                  <p class="timeline-meta">Prompt Contracts · Tool Calls · Error Paths</p>
+                  <p class="timeline-copy">
+                    Implement deterministic APIs and safety paths so behavior remains stable in production.
+                  </p>
+                </article>
+                <article class="timeline-item" data-step="3">
+                  <h3 class="timeline-head">3. Evaluate, Observe, Release</h3>
+                  <p class="timeline-meta">Eval Runs · Tracing · Canary Gate</p>
+                  <p class="timeline-copy">
+                    Run regression checks, inspect traces, then deploy with canary and rollback options.
+                  </p>
+                </article>
+              </div>
+            </div>
+            <aside class="glass-card terminal-card reveal">
+              <div class="terminal-head">
+                <p class="section-kicker">Build Terminal</p>
+                <span class="status live">Live Trace</span>
+              </div>
+              <p class="terminal-hint">
+                Simulated runtime logs from an LLM + RAG shipping workflow: ingest, evaluate, deploy.
+              </p>
+              <div class="terminal-shell" role="status" aria-live="polite">
+                <div class="terminal-top">
+                  <span class="terminal-dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                  <span class="terminal-name">agent-pipeline.prod</span>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                  <div class="term-line meta">Waiting for job stream...</div>
+                </div>
+              </div>
+              <div class="token-row">
+                <span class="token">Ingestion</span>
+                <span class="token">Vector Index</span>
+                <span class="token">Eval Gate</span>
+                <span class="token">Canary Deploy</span>
+              </div>
+            </aside>
+          </div>
+          <div class="hero-actions home-gallery-cta reveal">
+            <a class="btn ghost" href="pages/process.html">Open Full Process Page</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Contact Snapshot</p>
+            <h2>Open to AI Application Engineer Roles.</h2>
+            <p>If your team is shipping AI features and needs reliability plus speed, I would like to talk.</p>
+          </div>
+          <div class="contact-wrap">
+            <article class="glass-card reveal">
+              <h3>Start a Conversation</h3>
+              <p class="contact-copy">Share role scope, product constraints, and expected outcomes.</p>
+              <div class="hero-actions contact-actions">
+                <a class="btn primary" href="mailto:hello@iljard.dev">Email Me</a>
+                <a class="btn ghost" href="prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">View Resume</a>
+              </div>
+            </article>
+            <article class="glass-card reveal">
+              <h3>Professional Links</h3>
+              <div class="contact-links contact-links-spaced">
+                <a href="mailto:hello@iljard.dev">Email</a>
+                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="pages/contact.html">Full Contact Page</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p>
+    </footer>
+
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>

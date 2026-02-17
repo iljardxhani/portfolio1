@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SQL + Docs Hybrid Agent | Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+  </head>
+  <body>
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+    <header class="site-header"><div class="container">
+      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+      </nav>
+      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+    </div></header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact"><div class="container"><div class="hero-panel hero-panel-left reveal">
+        <p class="eyebrow">Case Study · Hybrid Agent</p>
+        <h1>SQL + Docs Hybrid Agent</h1>
+        <p class="lede">Single assistant that selects SQL tools for structured facts and RAG for policy/process context through explicit function-calling logic.</p>
+        <div class="quick-points">
+          <div class="quick-point"><strong>Problem</strong><span>One source cannot answer both numeric and policy questions reliably.</span></div>
+          <div class="quick-point"><strong>Solution</strong><span>Router decides DB query vs. retrieval path per user intent.</span></div>
+          <div class="quick-point"><strong>Impact</strong><span>Higher precision on analytics questions and fewer fabricated figures.</span></div>
+        </div>
+      </div></div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Tool-Calling Strategy</h2></div>
+        <div class="cards-3">
+          <article class="glass-card reveal"><h3>Intent Router</h3><p>Classifies query into SQL, docs retrieval, or hybrid path with confidence thresholds.</p></article>
+          <article class="glass-card reveal"><h3>SQL Tool</h3><p>Parameterized query generation with schema constraints and safe execution policies.</p></article>
+          <article class="glass-card reveal"><h3>RAG Tool</h3><p>Semantic retrieval over docs with citation and snippet evidence for every non-SQL claim.</p></article>
+        </div>
+      </div></section>
+
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Evidence</p><h2>Accuracy and Safety</h2></div>
+        <div class="kpi-grid">
+          <article class="glass-card reveal kpi-card"><h3>Query Correctness</h3><p>SQL output validated with deterministic checks on schema and bounds.</p></article>
+          <article class="glass-card reveal kpi-card"><h3>Groundedness</h3><p>Doc-derived answers require attached citations and retrieval confidence.</p></article>
+          <article class="glass-card reveal kpi-card"><h3>Route Precision</h3><p>Intent router monitored for misroute rate across benchmark prompts.</p></article>
+        </div>
+        <article class="glass-card reveal detail-spaced">
+          <h3>Reliability Patterns</h3>
+          <ul class="proof-list">
+            <li>Read-only DB role and SQL execution guardrails.</li>
+            <li>Fallback to clarification question on low route confidence.</li>
+            <li>Trace each tool call for debugging and review.</li>
+          </ul>
+          <p class="path-note">Presentation path: <code>projects/sql-docs-hybrid-agent/presentations/upcoming/</code></p>
+        </article>
+      </div></section>
+    </main>
+
+    <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
+    <script src="../../assets/js/main.js" defer></script>
+  </body>
+</html>
