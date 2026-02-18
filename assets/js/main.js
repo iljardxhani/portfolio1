@@ -24,225 +24,280 @@
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   if (canvas && ctx) {
+    const cpuCores = Number(navigator.hardwareConcurrency || 0);
+    const memoryGb = Number(navigator.deviceMemory || 0);
+    const lowPowerDevice = (cpuCores > 0 && cpuCores <= 6) || (memoryGb > 0 && memoryGb <= 4);
 
-  let w = 0;
-  let h = 0;
-  let dpr = 1;
-  let rafId = null;
-  let scrollY = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-  let smoothPointerX = 0;
-  let smoothPointerY = 0;
-  let pointerVX = 0;
-  let pointerVY = 0;
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let rafId = null;
+    let scrollY = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    let smoothPointerX = 0;
+    let smoothPointerY = 0;
+    let pointerVX = 0;
+    let pointerVY = 0;
+    let rows = 0;
+    let cols = 0;
+    let pointsX = new Float32Array(0);
+    let pointsY = new Float32Array(0);
+    let pointsT = new Float32Array(0);
+    let pointsInfluence = new Float32Array(0);
+    let animationActive = !document.hidden;
 
-  const mix = (a, b, t) => a + (b - a) * t;
+    const maxDpr = lowPowerDevice ? 1.2 : 1.5;
+    const targetFps = lowPowerDevice ? 30 : 45;
+    const frameIntervalMs = 1000 / targetFps;
+    const rowSpacing = lowPowerDevice ? 28 : 24;
+    const colSpacing = lowPowerDevice ? 42 : 36;
+    const dotRowStep = lowPowerDevice ? 3 : 2;
+    const dotColStep = lowPowerDevice ? 3 : 2;
+    const ribbonSegments = lowPowerDevice ? 96 : 128;
+    let lastFrameTime = -frameIntervalMs;
 
-  const resize = () => {
-    dpr = clamp(window.devicePixelRatio || 1, 1, 2);
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  };
+    const mix = (a, b, t) => a + (b - a) * t;
+    const pointIndex = (r, c) => r * (cols + 1) + c;
 
-  const drawMesh = (timeMs = 0) => {
-    const time = timeMs * 0.001;
-    const horizon = h * 0.33;
-    const rows = Math.max(32, Math.floor(h / 22));
-    const cols = Math.max(36, Math.floor(w / 36));
-    const phaseScroll = scrollY * 0.001;
+    const resize = () => {
+      dpr = clamp(window.devicePixelRatio || 1, 1, maxDpr);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    smoothPointerX += (pointerX - smoothPointerX) * 0.085;
-    smoothPointerY += (pointerY - smoothPointerY) * 0.085;
-    pointerVX *= 0.92;
-    pointerVY *= 0.92;
+      rows = Math.max(24, Math.floor(h / rowSpacing));
+      cols = Math.max(30, Math.floor(w / colSpacing));
+      const pointCount = (rows + 1) * (cols + 1);
+      pointsX = new Float32Array(pointCount);
+      pointsY = new Float32Array(pointCount);
+      pointsT = new Float32Array(pointCount);
+      pointsInfluence = new Float32Array(pointCount);
+    };
 
-    const pointerSpeed = Math.min(Math.hypot(pointerVX, pointerVY) * 8, 1.4);
-    const mu = smoothPointerX * 0.82;
-    const mv = clamp((smoothPointerY + 1) * 0.5, 0, 1);
-
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "#02060b";
-    ctx.fillRect(0, 0, w, h);
-
-    const points = Array.from({ length: rows + 1 }, () => new Array(cols + 1));
-
-    for (let r = 0; r <= rows; r += 1) {
-      const t = r / rows;
-      const tPow = Math.pow(t, 1.58);
-      const yBase = mix(horizon, h * 1.08, tPow);
-      const rowWidth = mix(w * 0.18, w * 2.7, Math.pow(t, 1.34));
-      const waveAmp = 8 + 44 * Math.exp(-Math.pow((t - 0.34) * 3.6, 2));
-
-      for (let c = 0; c <= cols; c += 1) {
-        const u = c / cols - 0.5;
-
-        const waveA =
-          Math.sin(u * 10.2 + t * 9.1 + time * 1.12 + phaseScroll) * waveAmp;
-        const waveB =
-          Math.cos(u * 4.7 - t * 6.4 - time * 0.63 - phaseScroll * 0.64) *
-          (waveAmp * 0.46);
-        const waveC =
-          Math.sin((u + t * 0.7) * 5.6 + time * 0.37) * (waveAmp * 0.22);
-
-        const du = u - mu;
-        const dv = t - mv * 0.92;
-        const dist2 = du * du * 1.35 + dv * dv * 2.1 + 0.018;
-        const influence = Math.min(0.44, 0.028 / dist2);
-
-        const swirlX = -dv * influence * (96 + pointerSpeed * 30);
-        const lift = influence * (78 + pointerSpeed * 22) * (1 - t * 0.22);
-        const tiltPush = du * influence * (18 + pointerSpeed * 20);
-
-        const x = w * 0.5 + u * rowWidth + swirlX + smoothPointerX * 26 * (1 - t);
-        const y =
-          yBase +
-          waveA +
-          waveB +
-          waveC -
-          lift +
-          tiltPush +
-          smoothPointerY * 8 * (0.65 - t);
-
-        points[r][c] = { x, y, t, influence };
+    const drawMesh = (timeMs = 0) => {
+      if (!prefersReducedMotion && !animationActive) {
+        rafId = null;
+        return;
       }
-    }
 
-    for (let r = 0; r <= rows; r += 1) {
-      const t = r / rows;
-      const alpha = 0.08 + (1 - t) * 0.24;
-      ctx.strokeStyle = `rgba(174, 226, 255, ${alpha})`;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (let c = 0; c <= cols; c += 1) {
-        const point = points[r][c];
-        if (c === 0) {
-          ctx.moveTo(point.x, point.y);
-        } else {
-          ctx.lineTo(point.x, point.y);
-        }
+      if (!prefersReducedMotion && timeMs - lastFrameTime < frameIntervalMs) {
+        rafId = window.requestAnimationFrame(drawMesh);
+        return;
       }
-      ctx.stroke();
-    }
+      lastFrameTime = timeMs;
 
-    for (let c = 0; c <= cols; c += 1) {
-      const colAlpha = 0.06 + Math.sin((c / cols) * Math.PI) * 0.07;
-      ctx.strokeStyle = `rgba(138, 188, 235, ${colAlpha})`;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
+      const time = timeMs * 0.001;
+      const horizon = h * 0.33;
+      const phaseScroll = scrollY * 0.001;
+
+      smoothPointerX += (pointerX - smoothPointerX) * 0.085;
+      smoothPointerY += (pointerY - smoothPointerY) * 0.085;
+      pointerVX *= 0.92;
+      pointerVY *= 0.92;
+
+      const pointerSpeed = Math.min(Math.hypot(pointerVX, pointerVY) * 8, 1.4);
+      const mu = smoothPointerX * 0.82;
+      const mv = clamp((smoothPointerY + 1) * 0.5, 0, 1);
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#02060b";
+      ctx.fillRect(0, 0, w, h);
+
       for (let r = 0; r <= rows; r += 1) {
-        const point = points[r][c];
-        if (r === 0) {
-          ctx.moveTo(point.x, point.y);
+        const t = r / rows;
+        const tPow = Math.pow(t, 1.58);
+        const yBase = mix(horizon, h * 1.08, tPow);
+        const rowWidth = mix(w * 0.18, w * 2.7, Math.pow(t, 1.34));
+        const waveAmp = 8 + 44 * Math.exp(-Math.pow((t - 0.34) * 3.6, 2));
+        const rowOffset = r * (cols + 1);
+
+        for (let c = 0; c <= cols; c += 1) {
+          const u = c / cols - 0.5;
+
+          const waveA = Math.sin(u * 10.2 + t * 9.1 + time * 1.12 + phaseScroll) * waveAmp;
+          const waveB =
+            Math.cos(u * 4.7 - t * 6.4 - time * 0.63 - phaseScroll * 0.64) * (waveAmp * 0.46);
+          const waveC = Math.sin((u + t * 0.7) * 5.6 + time * 0.37) * (waveAmp * 0.22);
+
+          const du = u - mu;
+          const dv = t - mv * 0.92;
+          const dist2 = du * du * 1.35 + dv * dv * 2.1 + 0.018;
+          const influence = Math.min(0.44, 0.028 / dist2);
+
+          const swirlX = -dv * influence * (96 + pointerSpeed * 30);
+          const lift = influence * (78 + pointerSpeed * 22) * (1 - t * 0.22);
+          const tiltPush = du * influence * (18 + pointerSpeed * 20);
+
+          const idx = rowOffset + c;
+          pointsX[idx] = w * 0.5 + u * rowWidth + swirlX + smoothPointerX * 26 * (1 - t);
+          pointsY[idx] =
+            yBase + waveA + waveB + waveC - lift + tiltPush + smoothPointerY * 8 * (0.65 - t);
+          pointsT[idx] = t;
+          pointsInfluence[idx] = influence;
+        }
+      }
+
+      for (let r = 0; r <= rows; r += 1) {
+        const t = r / rows;
+        const alpha = 0.08 + (1 - t) * 0.24;
+        ctx.strokeStyle = `rgba(174, 226, 255, ${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let c = 0; c <= cols; c += 1) {
+          const idx = pointIndex(r, c);
+          if (c === 0) {
+            ctx.moveTo(pointsX[idx], pointsY[idx]);
+          } else {
+            ctx.lineTo(pointsX[idx], pointsY[idx]);
+          }
+        }
+        ctx.stroke();
+      }
+
+      for (let c = 0; c <= cols; c += 1) {
+        const colAlpha = 0.06 + Math.sin((c / cols) * Math.PI) * 0.07;
+        ctx.strokeStyle = `rgba(138, 188, 235, ${colAlpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let r = 0; r <= rows; r += 1) {
+          const idx = pointIndex(r, c);
+          if (r === 0) {
+            ctx.moveTo(pointsX[idx], pointsY[idx]);
+          } else {
+            ctx.lineTo(pointsX[idx], pointsY[idx]);
+          }
+        }
+        ctx.stroke();
+      }
+
+      for (let r = dotRowStep; r <= rows; r += dotRowStep) {
+        for (let c = dotColStep - 1; c <= cols; c += dotColStep) {
+          const idx = pointIndex(r, c);
+          const influence = pointsInfluence[idx];
+          const size = 0.62 + influence * 2.8;
+          const alpha = Math.min(0.86, 0.14 + influence * 0.54 + (1 - pointsT[idx]) * 0.14);
+          ctx.fillStyle = `rgba(18,212,255,${alpha})`;
+          ctx.beginPath();
+          ctx.arc(pointsX[idx], pointsY[idx], size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      const pointerScreenX = w * (0.5 + mu * 0.36);
+      const pointerScreenY = mix(horizon + 40, h * 0.82, mv);
+      const glow = ctx.createRadialGradient(
+        pointerScreenX,
+        pointerScreenY,
+        0,
+        pointerScreenX,
+        pointerScreenY,
+        280
+      );
+      glow.addColorStop(0, "rgba(18,212,255,0.2)");
+      glow.addColorStop(0.42, "rgba(37,227,180,0.08)");
+      glow.addColorStop(1, "rgba(18,212,255,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+
+      const ribbonY = horizon + 34 + Math.sin(time * 0.9) * 7 - smoothPointerY * 12;
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      const ribbonGradient = ctx.createLinearGradient(w * 0.12, ribbonY, w * 0.88, ribbonY + 36);
+      ribbonGradient.addColorStop(0, "rgba(255,255,255,0)");
+      ribbonGradient.addColorStop(0.34, "rgba(220,244,255,0.48)");
+      ribbonGradient.addColorStop(0.57, "rgba(18,212,255,0.34)");
+      ribbonGradient.addColorStop(0.74, "rgba(37,227,180,0.3)");
+      ribbonGradient.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.strokeStyle = ribbonGradient;
+      ctx.lineWidth = 2.3;
+      ctx.beginPath();
+      for (let i = 0; i <= ribbonSegments; i += 1) {
+        const t = i / ribbonSegments;
+        const x = mix(w * 0.16, w * 0.84, t);
+        const y =
+          ribbonY +
+          Math.sin(t * Math.PI * 1.7 + time * 0.38) * (18 + pointerSpeed * 6) +
+          Math.cos(t * Math.PI * 3.2 - time * 0.24) * 6;
+        if (i === 0) {
+          ctx.moveTo(x, y);
         } else {
-          ctx.lineTo(point.x, point.y);
+          ctx.lineTo(x, y);
         }
       }
       ctx.stroke();
-    }
+      ctx.restore();
 
-    for (let r = 2; r <= rows; r += 2) {
-      for (let c = 1; c <= cols; c += 2) {
-        const point = points[r][c];
-        const size = 0.62 + point.influence * 2.8;
-        const alpha = Math.min(0.86, 0.14 + point.influence * 0.54 + (1 - point.t) * 0.14);
-        ctx.fillStyle = `rgba(18,212,255,${alpha})`;
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
-        ctx.fill();
+      if (!prefersReducedMotion && animationActive) {
+        rafId = window.requestAnimationFrame(drawMesh);
       }
-    }
+    };
 
-    const pointerScreenX = w * (0.5 + mu * 0.36);
-    const pointerScreenY = mix(horizon + 40, h * 0.82, mv);
-    const glow = ctx.createRadialGradient(
-      pointerScreenX,
-      pointerScreenY,
-      0,
-      pointerScreenX,
-      pointerScreenY,
-      280
+    const setAnimationActive = (isActive) => {
+      if (animationActive === isActive) {
+        return;
+      }
+      animationActive = isActive;
+
+      if (!animationActive && rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+
+      if (animationActive && rafId === null && !prefersReducedMotion) {
+        lastFrameTime = performance.now() - frameIntervalMs;
+        rafId = window.requestAnimationFrame(drawMesh);
+      }
+    };
+
+    resize();
+    drawMesh(0);
+
+    window.addEventListener("resize", () => {
+      resize();
+      if (prefersReducedMotion) {
+        drawMesh(lastFrameTime);
+      }
+    });
+    window.addEventListener(
+      "scroll",
+      () => {
+        scrollY = window.scrollY || 0;
+      },
+      { passive: true }
     );
-    glow.addColorStop(0, "rgba(18,212,255,0.2)");
-    glow.addColorStop(0.42, "rgba(37,227,180,0.08)");
-    glow.addColorStop(1, "rgba(18,212,255,0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, w, h);
-
-    const ribbonY = horizon + 34 + Math.sin(time * 0.9) * 7 - smoothPointerY * 12;
-    ctx.save();
-    ctx.globalCompositeOperation = "lighter";
-    const ribbonGradient = ctx.createLinearGradient(w * 0.12, ribbonY, w * 0.88, ribbonY + 36);
-    ribbonGradient.addColorStop(0, "rgba(255,255,255,0)");
-    ribbonGradient.addColorStop(0.34, "rgba(220,244,255,0.48)");
-    ribbonGradient.addColorStop(0.57, "rgba(18,212,255,0.34)");
-    ribbonGradient.addColorStop(0.74, "rgba(37,227,180,0.3)");
-    ribbonGradient.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.strokeStyle = ribbonGradient;
-    ctx.lineWidth = 2.3;
-    ctx.beginPath();
-    for (let i = 0; i <= 150; i += 1) {
-      const t = i / 150;
-      const x = mix(w * 0.16, w * 0.84, t);
-      const y =
-        ribbonY +
-        Math.sin(t * Math.PI * 1.7 + time * 0.38) * (18 + pointerSpeed * 6) +
-        Math.cos(t * Math.PI * 3.2 - time * 0.24) * 6;
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
+    window.addEventListener(
+      "pointermove",
+      (event) => {
+        const nextX = (event.clientX / w - 0.5) * 2;
+        const nextY = (event.clientY / h - 0.5) * 2;
+        pointerVX = nextX - pointerX;
+        pointerVY = nextY - pointerY;
+        pointerX = nextX;
+        pointerY = nextY;
+      },
+      { passive: true }
+    );
+    window.addEventListener(
+      "pointerleave",
+      () => {
+        pointerX *= 0.9;
+        pointerY *= 0.9;
+      },
+      { passive: true }
+    );
+    document.addEventListener("visibilitychange", () => {
+      setAnimationActive(!document.hidden);
+    });
+    window.addEventListener("beforeunload", () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
       }
-    }
-    ctx.stroke();
-    ctx.restore();
-
-    if (!prefersReducedMotion) {
-      rafId = window.requestAnimationFrame(drawMesh);
-    }
-  };
-
-  resize();
-  drawMesh(0);
-
-  window.addEventListener("resize", resize);
-  window.addEventListener(
-    "scroll",
-    () => {
-      scrollY = window.scrollY || 0;
-    },
-    { passive: true }
-  );
-  window.addEventListener(
-    "pointermove",
-    (event) => {
-      const nextX = (event.clientX / w - 0.5) * 2;
-      const nextY = (event.clientY / h - 0.5) * 2;
-      pointerVX = nextX - pointerX;
-      pointerVY = nextY - pointerY;
-      pointerX = nextX;
-      pointerY = nextY;
-    },
-    { passive: true }
-  );
-  window.addEventListener(
-    "pointerleave",
-    () => {
-      pointerX *= 0.9;
-      pointerY *= 0.9;
-    },
-    { passive: true }
-  );
-  window.addEventListener("beforeunload", () => {
-    if (rafId !== null) {
-      window.cancelAnimationFrame(rafId);
-    }
-  });
+    });
   }
 
   const revealEls = document.querySelectorAll(".reveal");
