@@ -4,12 +4,57 @@
       "source": "/portfolio.html",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/pages/about.html",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/pages/process.html",
+      "destination": "/process",
+      "permanent": true
+    },
+    {
+      "source": "/pages/contact.html",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/pages/projects/index.html",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/pages/projects/:slug.html",
+      "destination": "/projects/:slug",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
       "source": "/",
       "destination": "/portfolio.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/pages/about.html"
+    },
+    {
+      "source": "/process",
+      "destination": "/pages/process.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/pages/contact.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/pages/projects/index.html"
+    },
+    {
+      "source": "/projects/:slug",
+      "destination": "/pages/projects/:slug.html"
     }
   ]
 }
