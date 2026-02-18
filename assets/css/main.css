@@ -1805,6 +1805,22 @@ body.code-modal-open {
 }
 
 @media (max-width: 860px) {
+  .bg-overlay {
+    background:
+      radial-gradient(circle at 50% 56%, rgba(8, 31, 42, 0.13), transparent 56%),
+      linear-gradient(
+        180deg,
+        rgba(2, 6, 11, 0.97) 0%,
+        rgba(2, 6, 11, 0.93) 20%,
+        rgba(2, 6, 11, 0.68) 44%,
+        rgba(2, 6, 11, 0.92) 100%
+      );
+  }
+
+  .bg-overlay::after {
+    opacity: 0.16;
+  }
+
   .site-header .container {
     min-height: auto;
     padding: 0.7rem 0;

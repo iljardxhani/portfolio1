@@ -24,6 +24,9 @@
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   if (canvas && ctx) {
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const isPhoneViewport = window.matchMedia("(max-width: 860px)").matches;
+    const mobileMeshMode = isCoarsePointer || isPhoneViewport;
     const cpuCores = Number(navigator.hardwareConcurrency || 0);
     const memoryGb = Number(navigator.deviceMemory || 0);
     const lowPowerDevice = (cpuCores > 0 && cpuCores <= 6) || (memoryGb > 0 && memoryGb <= 4);
@@ -46,15 +49,21 @@
     let pointsT = new Float32Array(0);
     let pointsInfluence = new Float32Array(0);
     let animationActive = !document.hidden;
+    let touchPulse = 0;
+    let touchPulseX = 0;
+    let touchPulseY = 0;
+    let touchPulsePhase = 0;
 
-    const maxDpr = lowPowerDevice ? 1.2 : 1.5;
-    const targetFps = lowPowerDevice ? 30 : 45;
+    const maxDpr = mobileMeshMode ? 1.12 : lowPowerDevice ? 1.2 : 1.5;
+    const targetFps = mobileMeshMode ? 28 : lowPowerDevice ? 30 : 45;
     const frameIntervalMs = 1000 / targetFps;
-    const rowSpacing = lowPowerDevice ? 28 : 24;
-    const colSpacing = lowPowerDevice ? 42 : 36;
-    const dotRowStep = lowPowerDevice ? 3 : 2;
-    const dotColStep = lowPowerDevice ? 3 : 2;
-    const ribbonSegments = lowPowerDevice ? 96 : 128;
+    const rowSpacing = mobileMeshMode ? 34 : lowPowerDevice ? 28 : 24;
+    const colSpacing = mobileMeshMode ? 56 : lowPowerDevice ? 42 : 36;
+    const dotRowStep = mobileMeshMode ? 4 : lowPowerDevice ? 3 : 2;
+    const dotColStep = mobileMeshMode ? 4 : lowPowerDevice ? 3 : 2;
+    const ribbonSegments = mobileMeshMode ? 72 : lowPowerDevice ? 96 : 128;
+    const meshLineStrength = mobileMeshMode ? 0.62 : 1;
+    const meshDotStrength = mobileMeshMode ? 0.74 : 1;
     let lastFrameTime = -frameIntervalMs;
 
     const mix = (a, b, t) => a + (b - a) * t;
@@ -92,7 +101,7 @@
       lastFrameTime = timeMs;
 
       const time = timeMs * 0.001;
-      const horizon = h * 0.33;
+      const horizon = h * (mobileMeshMode ? 0.42 : 0.33);
       const phaseScroll = scrollY * 0.001;
 
       smoothPointerX += (pointerX - smoothPointerX) * 0.085;
@@ -112,8 +121,12 @@
         const t = r / rows;
         const tPow = Math.pow(t, 1.58);
         const yBase = mix(horizon, h * 1.08, tPow);
-        const rowWidth = mix(w * 0.18, w * 2.7, Math.pow(t, 1.34));
-        const waveAmp = 8 + 44 * Math.exp(-Math.pow((t - 0.34) * 3.6, 2));
+        const rowWidth = mix(
+          mobileMeshMode ? w * 0.15 : w * 0.18,
+          mobileMeshMode ? w * 2.25 : w * 2.7,
+          Math.pow(t, 1.34)
+        );
+        const waveAmp = (mobileMeshMode ? 6 : 8) + (mobileMeshMode ? 34 : 44) * Math.exp(-Math.pow((t - 0.34) * 3.6, 2));
         const rowOffset = r * (cols + 1);
 
         for (let c = 0; c <= cols; c += 1) {
@@ -144,9 +157,9 @@
 
       for (let r = 0; r <= rows; r += 1) {
         const t = r / rows;
-        const alpha = 0.08 + (1 - t) * 0.24;
+        const alpha = (0.08 + (1 - t) * 0.24) * meshLineStrength;
         ctx.strokeStyle = `rgba(174, 226, 255, ${alpha})`;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = mobileMeshMode ? 0.9 : 1;
         ctx.beginPath();
         for (let c = 0; c <= cols; c += 1) {
           const idx = pointIndex(r, c);
@@ -160,9 +173,9 @@
       }
 
       for (let c = 0; c <= cols; c += 1) {
-        const colAlpha = 0.06 + Math.sin((c / cols) * Math.PI) * 0.07;
+        const colAlpha = (0.06 + Math.sin((c / cols) * Math.PI) * 0.07) * meshLineStrength;
         ctx.strokeStyle = `rgba(138, 188, 235, ${colAlpha})`;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = mobileMeshMode ? 0.9 : 1;
         ctx.beginPath();
         for (let r = 0; r <= rows; r += 1) {
           const idx = pointIndex(r, c);
@@ -179,8 +192,9 @@
         for (let c = dotColStep - 1; c <= cols; c += dotColStep) {
           const idx = pointIndex(r, c);
           const influence = pointsInfluence[idx];
-          const size = 0.62 + influence * 2.8;
-          const alpha = Math.min(0.86, 0.14 + influence * 0.54 + (1 - pointsT[idx]) * 0.14);
+          const size = (mobileMeshMode ? 0.52 : 0.62) + influence * (mobileMeshMode ? 2.1 : 2.8);
+          const alpha =
+            Math.min(0.86, 0.14 + influence * 0.54 + (1 - pointsT[idx]) * 0.14) * meshDotStrength;
           ctx.fillStyle = `rgba(18,212,255,${alpha})`;
           ctx.beginPath();
           ctx.arc(pointsX[idx], pointsY[idx], size, 0, Math.PI * 2);
@@ -196,25 +210,47 @@
         0,
         pointerScreenX,
         pointerScreenY,
-        280
+        mobileMeshMode ? 240 : 280
       );
-      glow.addColorStop(0, "rgba(18,212,255,0.2)");
-      glow.addColorStop(0.42, "rgba(37,227,180,0.08)");
+      glow.addColorStop(0, mobileMeshMode ? "rgba(18,212,255,0.15)" : "rgba(18,212,255,0.2)");
+      glow.addColorStop(0.42, mobileMeshMode ? "rgba(37,227,180,0.05)" : "rgba(37,227,180,0.08)");
       glow.addColorStop(1, "rgba(18,212,255,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, w, h);
+
+      if (touchPulse > 0.01) {
+        touchPulsePhase += mobileMeshMode ? 0.05 : 0.04;
+        const px = w * (0.5 + touchPulseX * 0.42);
+        const py = h * clamp((touchPulseY + 1) * 0.5, 0, 1);
+        const radius = 24 + touchPulsePhase * (mobileMeshMode ? 54 : 42);
+        const pulseAlpha = Math.min(0.28, touchPulse * (mobileMeshMode ? 0.28 : 0.2));
+
+        ctx.strokeStyle = `rgba(18,212,255,${pulseAlpha})`;
+        ctx.lineWidth = mobileMeshMode ? 1.6 : 1.3;
+        ctx.beginPath();
+        ctx.arc(px, py, radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const pulseGlow = ctx.createRadialGradient(px, py, 0, px, py, radius * 1.8);
+        pulseGlow.addColorStop(0, `rgba(18,212,255,${pulseAlpha * 0.65})`);
+        pulseGlow.addColorStop(1, "rgba(18,212,255,0)");
+        ctx.fillStyle = pulseGlow;
+        ctx.fillRect(0, 0, w, h);
+
+        touchPulse *= 0.94;
+      }
 
       const ribbonY = horizon + 34 + Math.sin(time * 0.9) * 7 - smoothPointerY * 12;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
       const ribbonGradient = ctx.createLinearGradient(w * 0.12, ribbonY, w * 0.88, ribbonY + 36);
       ribbonGradient.addColorStop(0, "rgba(255,255,255,0)");
-      ribbonGradient.addColorStop(0.34, "rgba(220,244,255,0.48)");
-      ribbonGradient.addColorStop(0.57, "rgba(18,212,255,0.34)");
-      ribbonGradient.addColorStop(0.74, "rgba(37,227,180,0.3)");
+      ribbonGradient.addColorStop(0.34, mobileMeshMode ? "rgba(220,244,255,0.3)" : "rgba(220,244,255,0.48)");
+      ribbonGradient.addColorStop(0.57, mobileMeshMode ? "rgba(18,212,255,0.24)" : "rgba(18,212,255,0.34)");
+      ribbonGradient.addColorStop(0.74, mobileMeshMode ? "rgba(37,227,180,0.21)" : "rgba(37,227,180,0.3)");
       ribbonGradient.addColorStop(1, "rgba(255,255,255,0)");
       ctx.strokeStyle = ribbonGradient;
-      ctx.lineWidth = 2.3;
+      ctx.lineWidth = mobileMeshMode ? 1.8 : 2.3;
       ctx.beginPath();
       for (let i = 0; i <= ribbonSegments; i += 1) {
         const t = i / ribbonSegments;
@@ -277,6 +313,20 @@
         const nextY = (event.clientY / h - 0.5) * 2;
         pointerVX = nextX - pointerX;
         pointerVY = nextY - pointerY;
+        pointerX = nextX;
+        pointerY = nextY;
+      },
+      { passive: true }
+    );
+    window.addEventListener(
+      "pointerdown",
+      (event) => {
+        const nextX = (event.clientX / w - 0.5) * 2;
+        const nextY = (event.clientY / h - 0.5) * 2;
+        touchPulseX = nextX;
+        touchPulseY = nextY;
+        touchPulse = 1;
+        touchPulsePhase = 0;
         pointerX = nextX;
         pointerY = nextY;
       },
