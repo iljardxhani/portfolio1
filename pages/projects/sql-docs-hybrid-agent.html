@@ -16,11 +16,11 @@
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
     <header class="site-header"><div class="container">
-      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+        <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a><a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a><a href="../process.html" target="_blank" rel="noreferrer">Process</a><a href="../about.html" target="_blank" rel="noreferrer">About</a><a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
       </nav>
-      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
     </div></header>
 
     <main class="page-main">
@@ -35,11 +35,24 @@
         </div>
       </div></div></section>
 
-      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Tool-Calling Strategy</h2></div>
-        <div class="cards-3">
-          <article class="glass-card reveal"><h3>Intent Router</h3><p>Classifies query into SQL, docs retrieval, or hybrid path with confidence thresholds.</p></article>
-          <article class="glass-card reveal"><h3>SQL Tool</h3><p>Parameterized query generation with schema constraints and safe execution policies.</p></article>
-          <article class="glass-card reveal"><h3>RAG Tool</h3><p>Semantic retrieval over docs with citation and snippet evidence for every non-SQL claim.</p></article>
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Tool-Calling Strategy</h2><p>Orchestrated as a governed agent runtime: intent arbitration, SQL safety controls, retrieval grounding, and deterministic synthesis.</p></div>
+        <article class="tech-peek reveal detail-spaced">
+          <pre class="code-peek"><code>user query -> intent arbitration -> execution plan -> tool dispatch
+                  |                    |                  |
+                  v                    v                  v
+            uncertainty gate      sql safety policy   docs retrieval policy
+                  |                    |                  |
+                  v                    v                  v
+             clarify route      parameterized SQL      citation-backed context
+                           \\          |          /
+                            \\         v         /
+                             answer synthesis + evidence trace</code></pre>
+          <p class="peek-why"><strong>Why this matters:</strong> one assistant can handle metrics and policy questions without unsafe SQL behavior or ungrounded text answers.</p>
+        </article>
+        <div class="cards-3 detail-spaced">
+          <article class="glass-card reveal"><h3>Intent Arbitration Layer</h3><p>Routes each query to SQL, docs, hybrid, or clarify path based on confidence and ambiguity policy.</p></article>
+          <article class="glass-card reveal"><h3>SQL Guarded Execution</h3><p>Read-only queries only, schema-aware planning, and post-query validation before values are returned to synthesis.</p></article>
+          <article class="glass-card reveal"><h3>Grounded Response Composer</h3><p>Merges structured SQL output and retrieved documentation with citation requirements and conflict-resolution rules.</p></article>
         </div>
       </div></section>
 
@@ -59,7 +72,151 @@
           <p class="path-note">Presentation path: <code>projects/sql-docs-hybrid-agent/presentations/upcoming/</code></p>
         </article>
       </div></section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Deterministic Route + Tool Orchestration</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>def answer_with_hybrid_router(env: QueryEnvelope) -> AgentResponse:
+    intent = router.classify(env.query)
+    decision = resolve_route(intent, policy=route_policy)
+
+    if decision.route in {Route.SQL, Route.HYBRID}:
+        sql_plan = sql_planner.plan(env.query, schema=sql_schema)
+        sql_guard.assert_safe(sql_plan)
+        sql_result = sql_tool.execute(sql_plan)
+    else:
+        sql_result = None
+
+    if decision.route in {Route.DOCS, Route.HYBRID}:
+        docs_result = docs_tool.retrieve(env.query, top_k=8, min_score=0.62)
+    else:
+        docs_result = None
+
+    if decision.route == Route.CLARIFY:
+        return build_clarification_response(decision)
+
+    merged = synthesis.merge(sql_result=sql_result, docs_result=docs_result, query=env.query)
+    evidence = evidence_linker.attach(merged, sql_result=sql_result, docs_result=docs_result)
+    return policy_guard.finalize_or_fallback(merged, evidence, decision)</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#hybrid-agent-code-modal"
+                data-snippet-path="../../docs/snippets/sql_docs_hybrid_agent_router.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> route-aware orchestration prevents the model from guessing
+              structured facts and enforces safer SQL boundaries.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Intent Arbitration with Uncertainty States</h3>
+                <p>
+                  The router predicts `sql`, `docs`, `hybrid`, or `clarify`, and low-confidence classifications
+                  default to clarification rather than forcing a potentially wrong tool path.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> uncertain intent is handled explicitly, not hidden by guesswork.
+                </p>
+              </div>
+              <p class="cap-meta">Routing Quality</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Strict SQL Safety Envelope</h3>
+                <p>
+                  Read-only roles, parameterized query construction, and pattern-based blockers prevent dangerous or
+                  malformed SQL while keeping analytics answers precise.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> data access remains safe even when prompts are unpredictable.
+                </p>
+              </div>
+              <p class="cap-meta">Security</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Retrieval Evidence Requirements</h3>
+                <p>
+                  Non-SQL claims must carry citation payloads from retrieved docs; unsupported claims are rejected or
+                  rewritten with explicit uncertainty notes.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> policy/process answers stay grounded in actual documentation.
+                </p>
+              </div>
+              <p class="cap-meta">Groundedness</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Hybrid Merge Conflict Resolution</h3>
+                <p>
+                  When SQL and docs outputs disagree, synthesis rules prioritize deterministic database values and
+                  annotate policy interpretation separately for user clarity.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> mixed-source answers remain coherent and defensible.
+                </p>
+              </div>
+              <p class="cap-meta">Answer Integrity</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Tool-Trace Evaluation Loop</h3>
+                <p>
+                  Each route decision and tool call is traced and replayed in benchmark suites to improve router
+                  prompts, thresholds, and fallback behavior over time.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> routing performance gets measurably better with each iteration.
+                </p>
+              </div>
+              <p class="cap-meta">Continuous Improvement</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="hybrid-agent-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="hybrid-agent-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="hybrid-agent-code-title">SQL + Docs Hybrid Agent · Full Router Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>

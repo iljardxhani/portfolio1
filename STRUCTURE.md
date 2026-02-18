@@ -7,7 +7,7 @@ This portfolio now uses a multi-page architecture with page-based navigation and
 ```
 .
 ├── portfolio.html
-├── prop_cv_mockup_exact.pdf
+├── Iljard_Xhani_CV.pdf
 ├── STRUCTURE.md
 ├── assets/
 │   ├── brand/

@@ -18,18 +18,18 @@
 
     <header class="site-header">
       <div class="container">
-        <a class="brand" href="../../portfolio.html">
+        <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer">
           <span class="brand-mark"></span>
           <span>Iljard <strong>Xhani</strong> · AI Engineering</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="../../portfolio.html">Home</a>
-          <a href="./index.html" aria-current="page">Projects</a>
-          <a href="../process.html">Process</a>
-          <a href="../about.html">About</a>
-          <a href="../contact.html">Contact</a>
+          <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a>
+          <a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a>
+          <a href="../process.html" target="_blank" rel="noreferrer">Process</a>
+          <a href="../about.html" target="_blank" rel="noreferrer">About</a>
+          <a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
         </nav>
-        <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+        <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
       </div>
     </header>
 
@@ -40,8 +40,8 @@
             <p class="eyebrow">Case Study · RAG</p>
             <h1>DocChat RAG (Production)</h1>
             <p class="lede">
-              PDF/doc upload, chunking, embeddings, semantic retrieval, and answer generation with explicit
-              citations and source panels. Includes history per user session for follow-up questions.
+              PDF/doc upload, chunking, embeddings, semantic retrieval, and answer generation with explicit citations
+              and source panels. Includes history per user session for follow-up questions.
             </p>
             <div class="quick-points">
               <div class="quick-point"><strong>Problem</strong><span>Answers from internal docs are inconsistent and hard to verify.</span></div>
@@ -54,11 +54,36 @@
 
       <section>
         <div class="container">
-          <div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>System Design</h2></div>
-          <div class="cards-3">
-            <article class="glass-card reveal"><h3>Ingestion Service</h3><p>Extract text, clean artifacts, chunk by semantic boundaries, then store chunk metadata for traceability.</p></article>
-            <article class="glass-card reveal"><h3>Retrieval Layer</h3><p>Embed chunks and perform similarity + metadata filtering, with reranking before context assembly.</p></article>
-            <article class="glass-card reveal"><h3>Answer Layer</h3><p>LLM response constrained to retrieved context and returned with citation links and source snippets.</p></article>
+          <div class="section-head reveal">
+            <p class="section-kicker">Architecture</p>
+            <h2>System Design</h2>
+            <p>
+              Keep the runtime simple for users but strict internally: versioned ingestion, hybrid retrieval,
+              citation-aligned generation, and release safety checks.
+            </p>
+          </div>
+          <article class="tech-peek reveal detail-spaced">
+            <pre class="code-peek"><code>sources -> ingestion contracts -> chunk/version store
+                     |                    |
+                     v                    v
+               lexical index         vector index
+                     \                  /
+                      \                /
+                      hybrid retrieval + rerank
+                               |
+                               v
+                  citation-constrained answer runtime
+                               |
+                               v
+                 response + citations + source panels</code></pre>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> this keeps answer quality stable as the corpus and traffic grow.
+            </p>
+          </article>
+          <div class="cards-3 detail-spaced">
+            <article class="glass-card reveal"><h3>Ingestion Service</h3><p>Extract text, normalize artifacts, chunk by boundaries, and persist source/version lineage.</p></article>
+            <article class="glass-card reveal"><h3>Hybrid Retrieval</h3><p>Dense + lexical retrieval with reranking and confidence filtering before context assembly.</p></article>
+            <article class="glass-card reveal"><h3>Answer + Guardrails</h3><p>Citation-constrained generation with fallback behavior when grounding confidence is low.</p></article>
           </div>
         </div>
       </section>
@@ -80,16 +105,168 @@
 
       <section>
         <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Reliability-Gated Answer Controller</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>def answer_with_policy(env: QueryEnvelope) -> AnswerPayload:
+    retrieval = retrieve_context(query=env.query, ...)
+    if not retrieval.context:
+        return fallback_payload(env=env, reason="empty_context", ...)
+
+    draft = llm.generate(
+        prompt=build_prompt_contract(retrieval.query),
+        context=retrieval.context,
+        history=sessions.get_recent_turns(env.session_id),
+    )
+
+    citations = align_citations(draft.answer, retrieval.fused_hits)
+    report = build_guardrail_report(
+        answer=draft.answer,
+        retrieval=retrieval,
+        citations=citations,
+        policy=policy,
+        policy_store=policy_store,
+    )
+
+    if report.blocked:
+        return fallback_payload(env=env, reason="guardrail_block", ...)
+
+    return AnswerPayload(
+        request_id=env.request_id,
+        answer=draft.answer,
+        citations=citations,
+        sources=build_sources(citations),
+        confidence=compute_confidence(report, retrieval),
+        metrics=collect_runtime_metrics(...),
+        guardrails=report,
+    )</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#docchat-code-modal"
+                data-snippet-path="../../docs/snippets/docchat_rag_pipeline.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> the answer path is constrained by runtime policy, not just model output.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Retrieval Confidence Thresholding</h3>
+                <p>
+                  Results below relevance policy are excluded; weak evidence routes to fallback instead of forced
+                  generation.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> reduces unsupported answers under difficult queries.
+                </p>
+              </div>
+              <p class="cap-meta">Quality Gate</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Citation-to-Chunk Mapping</h3>
+                <p>
+                  Every citation token maps to chunk IDs, source title, section, and revision so claims remain
+                  auditable.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> users can verify answers instantly.
+                </p>
+              </div>
+              <p class="cap-meta">Traceability</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Hybrid Dense + Lexical Retrieval</h3>
+                <p>
+                  Semantic retrieval captures meaning, lexical retrieval catches exact policy terms, reranker merges both
+                  signals.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> improves recall on both narrative and exact-match queries.
+                </p>
+              </div>
+              <p class="cap-meta">Retrieval Quality</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Runtime Guardrails + Fallback Lanes</h3>
+                <p>
+                  Empty context, low citation precision, and low groundedness each trigger deterministic fallback
+                  behavior.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> failure behavior is predictable in production.
+                </p>
+              </div>
+              <p class="cap-meta">Resilience</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Regression Evaluation Harness</h3>
+                <p>
+                  Benchmark suites compare current release candidate against baseline before deploy.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> quality drift is caught before users see it.
+                </p>
+              </div>
+              <p class="cap-meta">Release Safety</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
           <div class="glass-card reveal">
             <h3>Implementation Notes</h3>
             <div class="token-row">
-              <span class="token">FastAPI</span><span class="token">Postgres + pgvector</span><span class="token">Chunk Versioning</span><span class="token">Trace Logging</span>
+              <span class="token">FastAPI</span><span class="token">Postgres + pgvector</span><span class="token">Hybrid Retrieval</span><span class="token">Chunk Versioning</span><span class="token">Trace Logging</span>
             </div>
             <p class="path-note">Presentation path: <code>projects/docchat-rag-production/presentations/upcoming/</code></p>
           </div>
         </div>
       </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="docchat-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="docchat-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="docchat-code-title">DocChat RAG · Full Production Pipeline Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>

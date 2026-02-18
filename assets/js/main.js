@@ -4,6 +4,20 @@
     yearEl.textContent = String(new Date().getFullYear());
   }
 
+  const rootEl = document.documentElement;
+  const headerEl = document.querySelector(".site-header");
+  const syncHeaderHeight = () => {
+    if (!headerEl) {
+      return;
+    }
+    const headerHeight = Math.ceil(headerEl.getBoundingClientRect().height);
+    rootEl.style.setProperty("--header-h", `${headerHeight}px`);
+  };
+
+  syncHeaderHeight();
+  window.addEventListener("resize", syncHeaderHeight, { passive: true });
+  window.addEventListener("load", syncHeaderHeight);
+
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const canvas = document.getElementById("mesh-canvas");
   const ctx = canvas ? canvas.getContext("2d") : null;
@@ -383,7 +397,7 @@
       {
         step: 3,
         kind: "ok",
-        text: "[deploy] health-check pass · p95 latency 1.24s · rollback disabled",
+        text: "[deploy] health-check pass · p95 latency 1.24s · rollback ready",
       },
       {
         step: 3,
@@ -459,6 +473,186 @@
       typeTerminal();
     }
   }
+
+  const initEmailActions = () => {
+    const setStatus = (el, message) => {
+      if (!el) {
+        return;
+      }
+      el.textContent = message;
+      if (el.dataset.clearTimer) {
+        window.clearTimeout(Number(el.dataset.clearTimer));
+      }
+      const timerId = window.setTimeout(() => {
+        el.textContent = "";
+      }, 2200);
+      el.dataset.clearTimer = String(timerId);
+    };
+
+    const copyText = async (text) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      document.body.removeChild(field);
+    };
+
+    const copyButtons = Array.from(document.querySelectorAll("[data-copy-email]"));
+
+    const resolveEmailValue = (button) => {
+      const explicitValue = button.getAttribute("data-copy-email-value");
+      if (explicitValue) {
+        return explicitValue;
+      }
+      return "xhani.iljard@gmail.com";
+    };
+
+    copyButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const row = button.closest(".email-copy-line");
+        const statusEl = row ? row.querySelector("[data-copy-status]") : null;
+        const emailValue = resolveEmailValue(button);
+
+        try {
+          await copyText(emailValue);
+          setStatus(statusEl, "Email copied.");
+        } catch (_error) {
+          setStatus(statusEl, `Copy failed. Use ${emailValue}`);
+        }
+      });
+    });
+  };
+
+  initEmailActions();
+
+  const initScrollTopButton = () => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "scroll-top-btn";
+    button.setAttribute("aria-label", "Go to top");
+    button.innerHTML = '<span aria-hidden="true">↑</span><span>Top</span>';
+    document.body.appendChild(button);
+
+    const syncButtonVisibility = () => {
+      const shouldShow = (window.scrollY || 0) > 440;
+      button.classList.toggle("is-visible", shouldShow);
+    };
+
+    button.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
+    });
+
+    window.addEventListener("scroll", syncButtonVisibility, { passive: true });
+    syncButtonVisibility();
+  };
+
+  initScrollTopButton();
+
+  const initCodePreviewModal = () => {
+    const openers = Array.from(document.querySelectorAll("[data-open-code-modal]"));
+    if (!openers.length) {
+      return;
+    }
+
+    openers.forEach((opener) => {
+      const modalTarget = opener.getAttribute("data-modal-target");
+      if (!modalTarget) {
+        return;
+      }
+
+      const modal = document.querySelector(modalTarget);
+      if (!modal) {
+        return;
+      }
+
+      const closeBtn = modal.querySelector("[data-close-code-modal]");
+      const codeEl = modal.querySelector("[data-code-content]");
+      const snippetPath = opener.getAttribute("data-snippet-path");
+
+      let loaded = false;
+
+      const closeModal = () => {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("code-modal-open");
+      };
+
+      const openModal = async () => {
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("code-modal-open");
+
+        if (!codeEl || loaded || !snippetPath) {
+          return;
+        }
+
+        try {
+          const response = await fetch(snippetPath, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`Snippet fetch failed with status ${response.status}`);
+          }
+          const text = await response.text();
+          codeEl.textContent = text;
+          loaded = true;
+        } catch (error) {
+          codeEl.textContent = "Failed to load code preview.";
+          console.error(error);
+        }
+      };
+
+      opener.addEventListener("click", () => {
+        openModal();
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closeModal);
+      }
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+
+      if (codeEl) {
+        const block = (event) => {
+          event.preventDefault();
+        };
+
+        ["copy", "cut", "contextmenu", "selectstart", "dragstart"].forEach((type) => {
+          codeEl.addEventListener(type, block);
+        });
+
+        codeEl.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+          const isCmd = event.ctrlKey || event.metaKey;
+          if (isCmd && ["a", "c", "x"].includes(key)) {
+            event.preventDefault();
+          }
+        });
+      }
+    });
+  };
+
+  initCodePreviewModal();
 
   window.addEventListener("beforeunload", clearTerminalTimer);
 })();

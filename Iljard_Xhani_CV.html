@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iljard Xhani | CV</title>
+    <style>
+      :root {
+        --text: #0f172a;
+        --muted: #334155;
+        --line: #cbd5e1;
+        --accent: #0f766e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        color: var(--text);
+        line-height: 1.38;
+        background: #fff;
+      }
+
+      .page {
+        width: 210mm;
+        margin: 0 auto;
+        padding: 12mm;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      ul {
+        margin: 0;
+      }
+
+      header {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+        letter-spacing: 0.01em;
+      }
+
+      .role {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .contact {
+        margin-top: 6px;
+        font-size: 13px;
+      }
+
+      .section {
+        margin-top: 10px;
+      }
+
+      h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+
+      h3 {
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      p,
+      li {
+        font-size: 12.5px;
+      }
+
+      ul {
+        padding-left: 16px;
+      }
+
+      li + li {
+        margin-top: 2px;
+      }
+
+      .project {
+        margin-top: 7px;
+      }
+
+      .project ul {
+        margin-top: 2px;
+      }
+
+      .skills {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 12px;
+      }
+
+      .skills ul {
+        margin-top: 1px;
+      }
+
+      @media print {
+        .page {
+          margin: 0;
+          width: auto;
+          padding: 9mm;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Iljard Xhani</h1>
+        <p class="role">AI Application Engineer (LLM + RAG + Reliability)</p>
+        <p class="contact">xhani.iljard@gmail.com</p>
+      </header>
+
+      <section class="section">
+        <h2>Summary</h2>
+        <p>
+          AI Application Engineer focused on shipping production-ready LLM features with measurable
+          quality gates. Builds end-to-end systems across retrieval, orchestration, evaluation, and
+          operational reliability. Portfolio includes six detailed case studies across RAG,
+          multi-tenant SaaS controls, and workflow automation.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Core Skills</h2>
+        <div class="skills">
+          <ul>
+            <li>LLM app engineering: prompt contracts, tool/function calling, deterministic APIs</li>
+            <li>RAG systems: ingestion, chunking, hybrid retrieval, reranking, citation grounding</li>
+            <li>Evaluation and release safety: faithfulness checks, regression gates, CI evals</li>
+          </ul>
+          <ul>
+            <li>Reliability: observability, rate limits, fallback paths, audit logging</li>
+            <li>Backend: FastAPI, Python, Pydantic, Postgres, pgvector, Docker, n8n</li>
+            <li>Architecture: multi-tenant auth, policy enforcement, runtime guardrails</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Selected Projects</h2>
+
+        <article class="project">
+          <h3>RAG Evaluation Lab (Release Gate System)</h3>
+          <ul>
+            <li>Built policy-driven evaluation orchestration to block low-quality releases before deployment.</li>
+            <li>Implemented thresholds: max quality regression -0.02, min pass rate 0.90, min faithfulness 0.88, max p95 latency 1900ms.</li>
+            <li>Added PR smoke checks plus nightly benchmark runs for faster feedback and long-horizon quality tracking.</li>
+          </ul>
+        </article>
+
+        <article class="project">
+          <h3>DocChat RAG (Production)</h3>
+          <ul>
+            <li>Built PDF/docs ingestion-to-answer pipeline with hybrid retrieval and citation-constrained responses.</li>
+            <li>Added runtime guardrails, fallback lanes, and retrieval confidence checks to reduce unsupported answers.</li>
+            <li>Instrumented faithfulness, fallback-rate, and p95 latency signals for production monitoring.</li>
+          </ul>
+        </article>
+
+        <article class="project">
+          <h3>Mini SaaS: RAG for Teams</h3>
+          <ul>
+            <li>Built multi-tenant AI platform layer: auth context, org isolation, plan entitlements, quota and rate controls.</li>
+            <li>Implemented usage metering, billing flow hooks, and structured audit events for governance.</li>
+            <li>Validated tenant isolation and burst-traffic rate-limit behavior under plan policies.</li>
+          </ul>
+        </article>
+
+        <article class="project">
+          <h3>Customer Support AI Triage (n8n + FastAPI)</h3>
+          <ul>
+            <li>Designed event-driven triage workflow for email/DM classification, draft generation, routing, and ticket creation.</li>
+            <li>Enforced human-in-the-loop approvals and event-level auditability for outbound responses.</li>
+            <li>Added idempotent retries, dead-letter handling, and low-confidence fallback templates.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Professional Focus</h2>
+        <p>Open to AI Application Engineer roles building stable, measurable, and production-oriented AI features.</p>
+      </section>
+    </main>
+  </body>
+</html>

@@ -16,11 +16,11 @@
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
     <header class="site-header"><div class="container">
-      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+        <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a><a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a><a href="../process.html" target="_blank" rel="noreferrer">Process</a><a href="../about.html" target="_blank" rel="noreferrer">About</a><a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
       </nav>
-      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
     </div></header>
 
     <main class="page-main">
@@ -35,11 +35,21 @@
         </div>
       </div></div></section>
 
-      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Workflow Design</h2></div>
-        <div class="cards-3">
-          <article class="glass-card reveal"><h3>Ingress</h3><p>Email/DM connectors trigger n8n flows and normalize payloads for API processing.</p></article>
-          <article class="glass-card reveal"><h3>Triage Logic</h3><p>LLM classifier marks urgency, topic, and confidence, then assigns routing policy.</p></article>
-          <article class="glass-card reveal"><h3>Response + Ticketing</h3><p>Draft response generated, ticket written to system, and approval queue created for agents.</p></article>
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Workflow Design</h2><p>Built as a control system: intake contracts, policy-aware triage, deterministic fallback paths, and auditable human approval.</p></div>
+        <article class="tech-peek reveal detail-spaced">
+          <pre class="code-peek"><code>email/dm ingress -> normalize + redact -> classify + risk score -> routing policy
+       |                  |                      |                   |
+       v                  v                      v                   v
+idempotency check   attachment scan        draft strategy      queue assignment
+       |                                                           |
+       v                                                           v
+audit event log  -> approval gate -> ticket write -> notify -> SLA monitor</code></pre>
+          <p class="peek-why"><strong>Why this matters:</strong> keeps automation fast while preserving compliance, reviewability, and safe failure behavior.</p>
+        </article>
+        <div class="cards-3 detail-spaced">
+          <article class="glass-card reveal"><h3>Ingress + Validation</h3><p>Email/DM events are normalized, deduplicated, scanned, and enriched before any model action.</p></article>
+          <article class="glass-card reveal"><h3>Policy Triage Engine</h3><p>Classifier output is combined with risk and SLA policy to produce deterministic routing and escalation decisions.</p></article>
+          <article class="glass-card reveal"><h3>Approval + Audit Layer</h3><p>Draft, ticket state transitions, and human approvals are event-logged for replay, compliance, and incident review.</p></article>
         </div>
       </div></section>
 
@@ -58,7 +68,155 @@
           <p class="path-note">Presentation path: <code>projects/support-ai-triage/presentations/upcoming/</code></p>
         </article>
       </div></section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Policy-Governed Triage Orchestrator</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>def process_message(env: WorkflowEnvelope) -> WorkflowResult:
+    if idempotency_store.seen(env.message.message_id):
+        return build_cached_result(env.message.message_id)
+
+    prepared = preprocess_message(env.message, pii_redactor, attachment_scanner)
+    model_out = classifier.classify(prepared)
+    decision = policy_engine.resolve(model_out, prepared, env.customer_profile)
+
+    draft = draft_builder.build(prepared, decision, templates=template_library)
+    ticket = ticketing.create_ticket(prepared, decision)
+
+    if decision.requires_human_approval:
+        approval = approvals.enqueue(ticket.ticket_id, draft)
+        ticket.status = "pending_human_approval"
+    else:
+        approval = None
+
+    audit.write("triage.completed", {
+        "message_id": env.message.message_id,
+        "ticket_id": ticket.ticket_id,
+        "priority": decision.priority.value,
+        "queue": decision.target_queue,
+        "requires_human_approval": decision.requires_human_approval,
+    })
+
+    return finalize_result(ticket=ticket, decision=decision, draft=draft, approval=approval)</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#triage-code-modal"
+                data-snippet-path="../../docs/snippets/support_ai_triage_workflow.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> keeps response speed high while enforcing human approval and full
+              auditability for sensitive customer communications.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Confidence-Aware Escalation Rules</h3>
+                <p>
+                  Classifier outputs are mapped to explicit escalation paths; low confidence and high-risk categories
+                  bypass auto-draft behavior and jump directly to human handling.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> uncertain automation never acts as if it were certain.
+                </p>
+              </div>
+              <p class="cap-meta">Risk Control</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Mandatory Human Approval Queue</h3>
+                <p>
+                  Every outbound draft is staged for agent approval with SLA timers and ownership assignment before
+                  any customer-visible action is allowed.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> response speed improves without losing accountability.
+                </p>
+              </div>
+              <p class="cap-meta">Human-in-the-Loop</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Deterministic Fallback Templates</h3>
+                <p>
+                  When intent or confidence fails thresholds, the system serves policy-approved templates instead of
+                  free-form generation to avoid off-brand or unsafe messaging.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> worst-case behavior stays controlled and compliant.
+                </p>
+              </div>
+              <p class="cap-meta">Brand Safety</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Idempotent Workflow + Dead-Letter Handling</h3>
+                <p>
+                  Connector retries are idempotent by message ID and failures route to dead-letter queues with clear
+                  replay tooling, avoiding duplicate tickets and silent drops.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> operational reliability is maintained under integration issues.
+                </p>
+              </div>
+              <p class="cap-meta">Reliability</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Event-Sourced Audit Trail</h3>
+                <p>
+                  Classification decisions, draft revisions, approvals, and dispatch actions are logged as immutable
+                  events with actor metadata and timestamps.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> teams can reconstruct exactly what happened on any support case.
+                </p>
+              </div>
+              <p class="cap-meta">Traceability</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="triage-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="triage-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="triage-code-title">Support AI Triage · Full Workflow Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>

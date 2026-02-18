@@ -17,15 +17,15 @@
     <div class="bg-overlay" aria-hidden="true"></div>
     <header class="site-header">
       <div class="container">
-        <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+        <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="../../portfolio.html">Home</a>
-          <a href="./index.html" aria-current="page">Projects</a>
-          <a href="../process.html">Process</a>
-          <a href="../about.html">About</a>
-          <a href="../contact.html">Contact</a>
+          <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a>
+          <a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a>
+          <a href="../process.html" target="_blank" rel="noreferrer">Process</a>
+          <a href="../about.html" target="_blank" rel="noreferrer">About</a>
+          <a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
         </nav>
-        <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+        <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
       </div>
     </header>
 
@@ -43,11 +43,22 @@
         </div></div>
       </section>
 
-      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Evaluation Pipeline</h2></div>
-        <div class="cards-3">
-          <article class="glass-card reveal"><h3>Dataset Registry</h3><p>Versioned benchmark questions with expected answers and reference sources.</p></article>
-          <article class="glass-card reveal"><h3>Runner + Scorers</h3><p>Batch inference across model/retrieval variants with faithfulness and accuracy scoring.</p></article>
-          <article class="glass-card reveal"><h3>Report Layer</h3><p>Generate automated summary reports with trend comparison against previous baseline.</p></article>
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Evaluation Pipeline</h2><p>Designed as a release-control system: dataset contracts, deterministic scoring, drift diagnostics, and explicit merge gates.</p></div>
+        <article class="tech-peek reveal detail-spaced">
+          <pre class="code-peek"><code>dataset registry -> run orchestrator -> metric scorers -> drift analyzer
+         |                    |                  |               |
+         v                    v                  v               v
+  case stratification   model/retriever      quality deltas   gate policy
+   + gold citations      variant matrix      + CI trendline   + release decision
+                                         |
+                                         v
+                                  report + artifacts</code></pre>
+          <p class="peek-why"><strong>Why this matters:</strong> evaluations become enforceable release policy instead of passive dashboards.</p>
+        </article>
+        <div class="cards-3 detail-spaced">
+          <article class="glass-card reveal"><h3>Dataset Registry</h3><p>Versioned benchmark questions with tags, gold answers, and required citation sources.</p></article>
+          <article class="glass-card reveal"><h3>Scoring + Diagnostics</h3><p>Faithfulness, relevance, citation precision/recall, latency, and failure-mode classification per case.</p></article>
+          <article class="glass-card reveal"><h3>Release Gate Engine</h3><p>Regression thresholds and quality floors decide pass/fail for merge and deploy pipelines.</p></article>
         </div>
       </div></section>
 
@@ -67,7 +78,155 @@
           <p class="path-note">Presentation path: <code>projects/rag-evaluation-lab/presentations/upcoming/</code></p>
         </article>
       </div></section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Policy-Driven Evaluation Orchestrator</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>@dataclass
+class GatePolicy:
+    max_quality_regression: float = -0.02
+    min_pass_rate: float = 0.90
+    min_faithfulness: float = 0.88
+    max_p95_latency_ms: int = 1900
+
+
+def evaluate_and_gate(
+    run_ctx: RunContext,
+    cases: Sequence[EvalCase],
+    client: RAGClient,
+    baselines: BaselineStore,
+    policy: GatePolicy,
+) -> tuple[EvalSummary, GateDecision]:
+    baseline = baselines.get_baseline(run_ctx.suite_name)
+    results = [evaluate_case(client, case, run_ctx=run_ctx) for case in cases]
+    summary = summarize_results(run_ctx=run_ctx, results=results, baseline=baseline)
+    decision = apply_release_gate(summary=summary, policy=policy, baseline=baseline)
+
+    if not decision.allow_release:
+        raise RuntimeError("Evaluation gate failed: release blocked by policy.")
+
+    return summary, decision</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#rag-eval-code-modal"
+                data-snippet-path="../../docs/snippets/rag_evaluation_lab_pipeline.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> this gate prevents silent quality regressions from reaching
+              production after prompt/model/index changes.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Versioned Benchmark Registry</h3>
+                <p>
+                  Every evaluation suite is versioned with controlled question sets and expected behavior so score
+                  changes are compared against a stable reference instead of moving targets.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> metric movement is interpretable and release decisions are
+                  reproducible.
+                </p>
+              </div>
+              <p class="cap-meta">Benchmark Integrity</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Multi-Metric Scoring Strategy</h3>
+                <p>
+                  Accuracy, faithfulness, citation match, and latency are scored together with weighted summaries,
+                  preventing optimization on one metric while silently degrading others.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> quality gates reflect production reality, not a single narrow
+                  KPI.
+                </p>
+              </div>
+              <p class="cap-meta">Balanced Quality</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Hard Regression Gates in CI</h3>
+                <p>
+                  Pull requests fail automatically when regression deltas cross tolerated thresholds, forcing fixes
+                  before merge rather than relying on post-release monitoring.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> known quality drops never ship by accident.
+                </p>
+              </div>
+              <p class="cap-meta">Release Safety</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Layered Eval Cadence</h3>
+                <p>
+                  Fast PR smoke tests run on representative subsets while nightly full-suite runs cover broader edge
+                  cases and trend drift, keeping feedback both quick and deep.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> teams keep development speed without sacrificing rigor.
+                </p>
+              </div>
+              <p class="cap-meta">Developer Velocity</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Historical Drift Reporting</h3>
+                <p>
+                  Eval runs are persisted and compared over time to surface long-horizon degradation, not only
+                  immediate PR-to-PR changes.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> slow quality decay is detected early before user trust drops.
+                </p>
+              </div>
+              <p class="cap-meta">Observability</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="rag-eval-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="rag-eval-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="rag-eval-code-title">RAG Evaluation Lab · Full Pipeline Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>

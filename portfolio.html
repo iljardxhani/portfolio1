@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI Application Engineer portfolio with production-ready LLM, RAG, and evaluation case studies."
+    />
     <title>Iljard Xhani | AI Application Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,24 +16,24 @@
     />
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
-  <body>
+  <body class="home-page">
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
 
     <header class="site-header">
       <div class="container">
-        <a class="brand" href="portfolio.html">
+        <a class="brand" href="portfolio.html" target="_blank" rel="noreferrer">
           <span class="brand-mark"></span>
           <span>Iljard <strong>Xhani</strong> · AI Engineering</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="portfolio.html" aria-current="page">Home</a>
-          <a href="pages/projects/index.html">Projects</a>
-          <a href="pages/process.html">Process</a>
-          <a href="pages/about.html">About</a>
-          <a href="pages/contact.html">Contact</a>
+          <a href="portfolio.html" aria-current="page" target="_blank" rel="noreferrer">Home</a>
+          <a href="pages/projects/index.html" target="_blank" rel="noreferrer">Projects</a>
+          <a href="pages/process.html" target="_blank" rel="noreferrer">Process</a>
+          <a href="pages/about.html" target="_blank" rel="noreferrer">About</a>
+          <a href="pages/contact.html" target="_blank" rel="noreferrer">Contact</a>
         </nav>
-        <a class="btn small primary" href="prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+        <a class="btn small primary" href="Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
       </div>
     </header>
 
@@ -37,23 +41,31 @@
       <section class="hero page-hero">
         <div class="container">
           <div class="hero-panel reveal">
-            <p class="eyebrow">AI Application Engineer · LLM + RAG + Reliability</p>
+            <p class="eyebrow">AI Application Engineer · LLM + RAG shipped with eval gates</p>
             <h1>
-              Building AI Products
-              <span class="accent">That Survive Production</span>
+              I Ship Reliable LLM Features
+              <span class="accent">— With Measurable Quality</span>
             </h1>
             <p class="lede">
-              The home page now acts as a quick executive scan: what I build, how I build it,
-              and which projects prove production-level delivery.
+              6 end-to-end case studies with architecture, eval results, and deployment evidence
+              (logs, traces, screenshots).
             </p>
+            <!-- PROOF BAR: edit chips here -->
+            <div class="token-row proof-bar" role="list" aria-label="Proof markers">
+              <span class="token" role="listitem">6 case studies</span>
+              <span class="token" role="listitem">Architecture diagrams</span>
+              <span class="token" role="listitem">Eval reports</span>
+              <span class="token" role="listitem">Trace screenshots</span>
+              <span class="token" role="listitem">Deploy notes</span>
+            </div>
             <div class="hero-actions">
-              <a class="btn primary" href="pages/projects/index.html">Open Project Gallery</a>
-              <a class="btn ghost" href="pages/contact.html">Open to Interviews</a>
+              <a class="btn primary" href="pages/projects/index.html" target="_blank" rel="noreferrer">View Case Studies</a>
+              <a class="btn ghost" href="pages/contact.html" target="_blank" rel="noreferrer">Contact</a>
             </div>
             <ul class="hero-bullets reveal">
-              <li><strong>Production RAG:</strong> ingestion, retrieval, citations, and conversation memory.</li>
-              <li><strong>Evaluation First:</strong> faithfulness checks, regression gates, and trace visibility.</li>
-              <li><strong>Applied Systems:</strong> FastAPI, n8n, SQL tools, auth, limits, and audit logs.</li>
+              <li><strong>Production RAG:</strong> ingestion pipelines, retrieval tuning, citations, and session memory.</li>
+              <li><strong>Evaluation Discipline:</strong> faithfulness checks, regression gates, and trace-based debugging.</li>
+              <li><strong>Product Engineering:</strong> FastAPI services, auth boundaries, rate limits, and auditability.</li>
             </ul>
           </div>
         </div>
@@ -62,40 +74,40 @@
       <section>
         <div class="container">
           <div class="section-head reveal">
-            <p class="section-kicker">About Snapshot</p>
-            <h2>From Prompt to Production, End to End.</h2>
-            <p>I prioritize clarity, measurable quality, and safe iteration in real AI application environments.</p>
+            <p class="section-kicker">Hiring Snapshot</p>
+            <h2>What Teams Can Expect in the First 90 Days.</h2>
+            <p>I focus on fast alignment, measurable quality, and production-safe execution.</p>
           </div>
           <div class="story-grid">
             <article class="story-block reveal">
-              <h3>What I Deliver</h3>
+              <h3>First 30 Days</h3>
               <p>
-                AI features that connect model APIs, retrieval pipelines, and business workflows into one
-                reliable product surface.
+                Audit the current AI workflow, define success metrics, and establish an implementation
+                plan tied to user and business outcomes.
               </p>
               <div class="token-row">
-                <span class="token">FastAPI</span>
-                <span class="token">Python</span>
-                <span class="token">Postgres + pgvector</span>
-                <span class="token">Docker</span>
+                <span class="token">Architecture Audit</span>
+                <span class="token">KPI Baseline</span>
+                <span class="token">Risk Register</span>
+                <span class="token">Delivery Plan</span>
               </div>
             </article>
             <article class="story-block reveal">
-              <h3>How I Engineer</h3>
+              <h3>By Day 90</h3>
               <p>
-                I use eval-driven delivery with explicit tradeoffs for answer quality, latency, and
-                operational reliability.
+                Ship reliable AI features with retrieval quality checks, runtime guardrails, and clear
+                observability for continued iteration.
               </p>
               <div class="token-row">
-                <span class="token">Tracing</span>
-                <span class="token">Regression Evals</span>
-                <span class="token">Latency Budgets</span>
-                <span class="token">Guardrails</span>
+                <span class="token">Production Workflow</span>
+                <span class="token">Eval Gates</span>
+                <span class="token">Monitoring</span>
+                <span class="token">Iteration Playbook</span>
               </div>
             </article>
           </div>
           <div class="hero-actions home-gallery-cta reveal">
-            <a class="btn ghost" href="pages/about.html">Read Full About</a>
+            <a class="btn ghost" href="pages/about.html" target="_blank" rel="noreferrer">Read Full Profile</a>
           </div>
         </div>
       </section>
@@ -135,12 +147,60 @@
       <section>
         <div class="container">
           <div class="section-head reveal">
+            <p class="section-kicker">Role Fit Guide</p>
+            <h2>Which Projects to Send for Different Company Types.</h2>
+            <p>Use this map to tailor each application in under a minute.</p>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>Customer Support and Operations Teams</h3>
+                <p>
+                  Lead with <a href="pages/projects/support-ai-triage.html" target="_blank" rel="noreferrer">Customer Support AI Triage</a>
+                  and <a href="pages/projects/docchat-rag-production.html" target="_blank" rel="noreferrer">DocChat RAG</a> to show speed
+                  gains with human-review safeguards.
+                </p>
+              </div>
+              <p class="cap-meta">Automation + Reliability</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Internal Knowledge and Productivity Teams</h3>
+                <p>
+                  Start with <a href="pages/projects/docchat-rag-production.html" target="_blank" rel="noreferrer">DocChat RAG</a> and
+                  <a href="pages/projects/knowledge-base-builder.html" target="_blank" rel="noreferrer">Knowledge Base Builder</a> to
+                  demonstrate grounded answers and scalable ingestion.
+                </p>
+              </div>
+              <p class="cap-meta">Knowledge Systems</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>AI Platform and Product Teams</h3>
+                <p>
+                  Share <a href="pages/projects/rag-for-teams-saas.html" target="_blank" rel="noreferrer">RAG for Teams SaaS</a> and
+                  <a href="pages/projects/rag-evaluation-lab.html" target="_blank" rel="noreferrer">RAG Evaluation Lab</a> to highlight
+                  multi-tenant architecture and release-quality governance.
+                </p>
+              </div>
+              <p class="cap-meta">Platform + Quality</p>
+            </article>
+          </div>
+          <div class="hero-actions home-gallery-cta reveal">
+            <a class="btn ghost" href="pages/projects/index.html" target="_blank" rel="noreferrer">Open Full Project Gallery</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
             <p class="section-kicker">Projects Snapshot</p>
-            <h2>Structured Case Studies Hiring Teams Recognize.</h2>
-            <p>Each case study follows one pattern: Problem, Architecture, Evidence, Delivery.</p>
+            <h2>Case Studies With Technical and Delivery Evidence.</h2>
+            <p>Each case study follows one pattern: Problem, Architecture, Evidence, and Delivery decisions.</p>
           </div>
           <div class="project-strips">
-            <a class="project-strip reveal" href="pages/projects/docchat-rag-production.html">
+            <a class="project-strip reveal" href="pages/projects/docchat-rag-production.html" target="_blank" rel="noreferrer">
               <div class="project-strip-head">
                 <h3>DocChat RAG (Production)</h3>
                 <div class="project-top">
@@ -148,10 +208,11 @@
                   <span class="status">Production</span>
                 </div>
               </div>
-              <p>Upload docs, retrieve accurately, answer with citations, and preserve session history.</p>
+              <p>Grounded internal knowledge assistant with citations, retrieval confidence, and session memory.</p>
+              <p class="cap-meta">Evidence: citation checks, fallback-rate monitoring, and p95 latency tracking.</p>
               <div class="project-foot">Open case study →</div>
             </a>
-            <a class="project-strip reveal" href="pages/projects/rag-evaluation-lab.html">
+            <a class="project-strip reveal" href="pages/projects/rag-evaluation-lab.html" target="_blank" rel="noreferrer">
               <div class="project-strip-head">
                 <h3>RAG Evaluation Lab</h3>
                 <div class="project-top">
@@ -159,23 +220,25 @@
                   <span class="status">Regression</span>
                 </div>
               </div>
-              <p>Automated faithfulness and accuracy reports with regression tests before each release.</p>
+              <p>Automated faithfulness, relevance, and regression scoring used as release gates.</p>
+              <p class="cap-meta">Configured gates: faithfulness >= 0.88 and p95 latency <= 1900ms.</p>
               <div class="project-foot">Open case study →</div>
             </a>
-            <a class="project-strip reveal" href="pages/projects/rag-for-teams-saas.html">
+            <a class="project-strip reveal" href="pages/projects/rag-for-teams-saas.html" target="_blank" rel="noreferrer">
               <div class="project-strip-head">
                 <h3>Mini SaaS: RAG for Teams</h3>
                 <div class="project-top">
                   <span class="status live">SaaS</span>
-                  <span class="status">Job Magnet</span>
+                  <span class="status">Featured</span>
                 </div>
               </div>
-              <p>Auth, org boundaries, billing flow, rate limits, audit logs, and admin control surface.</p>
+              <p>Multi-tenant AI app surface with auth, org isolation, billing flow, rate limits, and audit logs.</p>
+              <p class="cap-meta">Validation: tenant-isolation tests and per-plan burst rate-limit checks.</p>
               <div class="project-foot">Open case study →</div>
             </a>
           </div>
           <div class="hero-actions home-gallery-cta reveal">
-            <a class="btn primary" href="pages/projects/index.html">See Full Gallery (6 Projects)</a>
+            <a class="btn primary" href="pages/projects/index.html" target="_blank" rel="noreferrer">See Full Gallery (6 Projects)</a>
           </div>
         </div>
       </section>
@@ -184,7 +247,7 @@
         <div class="container">
           <div class="section-head process-head reveal">
             <p class="section-kicker">Process Snapshot</p>
-            <h2>Build Flow I Use for AI Features.</h2>
+            <h2>Delivery Process I Use for AI Features.</h2>
           </div>
           <div class="process-surface">
             <div class="process-column reveal">
@@ -243,7 +306,7 @@
             </aside>
           </div>
           <div class="hero-actions home-gallery-cta reveal">
-            <a class="btn ghost" href="pages/process.html">Open Full Process Page</a>
+            <a class="btn ghost" href="pages/process.html" target="_blank" rel="noreferrer">Open Full Process Page</a>
           </div>
         </div>
       </section>
@@ -252,24 +315,56 @@
         <div class="container">
           <div class="section-head reveal">
             <p class="section-kicker">Contact Snapshot</p>
-            <h2>Open to AI Application Engineer Roles.</h2>
-            <p>If your team is building AI features that need to be stable, measurable, and fast, let’s talk.</p>
+            <h2>Open to AI Application Engineer Interviews.</h2>
+            <p>If your team is building AI features that must be stable, measurable, and fast, I can help.</p>
           </div>
           <div class="contact-band reveal">
             <div class="contact-intro">
               <p>
-                Share role scope, current stack constraints, and the outcomes you want in the first 90 days.
+                Send the role scope, your current stack constraints, and what you need to ship or improve in the first 90 days, and I will reply with how I would approach it in practice, where I can help fastest, and realistic first steps within about a day.
               </p>
               <div class="hero-actions contact-actions-inline">
-                <a class="btn primary" href="mailto:hello@iljard.dev">Email Me</a>
-                <a class="btn ghost" href="prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">View Resume</a>
+                <a
+                  class="btn primary"
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=xhani.iljard@gmail.com"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Compose in Gmail
+                </a>
+                <a class="btn ghost" href="Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">View Resume (PDF)</a>
               </div>
             </div>
             <div class="contact-links-plain">
-              <a href="mailto:hello@iljard.dev">Email</a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="pages/contact.html">Full Contact Page</a>
+              <p class="email-copy-line contact-copy-line">
+                <span class="contact-link-icon" aria-hidden="true">✉</span>
+                <code class="email-inline">xhani.iljard@gmail.com</code>
+                <button
+                  class="btn ghost small copy-email-btn"
+                  type="button"
+                  data-copy-email
+                  data-copy-email-value="xhani.iljard@gmail.com"
+                >
+                  Copy
+                </button>
+                <span class="copy-status" data-copy-status aria-live="polite"></span>
+              </p>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=xhani.iljard@gmail.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span class="contact-link-icon" aria-hidden="true">↗</span>
+                <span>Compose in Gmail</span>
+              </a>
+              <a href="https://www.linkedin.com/in/iljard-xhani-718114360/" target="_blank" rel="noreferrer">
+                <span class="contact-link-icon" aria-hidden="true">in</span>
+                <span>LinkedIn</span>
+              </a>
+              <a href="pages/contact.html" target="_blank" rel="noreferrer">
+                <span class="contact-link-icon" aria-hidden="true">↗</span>
+                <span>Full Contact Page</span>
+              </a>
             </div>
           </div>
         </div>

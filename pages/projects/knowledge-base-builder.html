@@ -16,11 +16,11 @@
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
     <header class="site-header"><div class="container">
-      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+        <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a><a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a><a href="../process.html" target="_blank" rel="noreferrer">Process</a><a href="../about.html" target="_blank" rel="noreferrer">About</a><a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
       </nav>
-      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
     </div></header>
 
     <main class="page-main">
@@ -35,11 +35,21 @@
         </div>
       </div></div></section>
 
-      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Pipeline Components</h2></div>
-        <div class="cards-3">
-          <article class="glass-card reveal"><h3>Source Connectors</h3><p>Adapters for PDF, URL, and markdown with metadata capture and deduplication.</p></article>
-          <article class="glass-card reveal"><h3>Normalization + Versioning</h3><p>Clean text and persist version snapshots to support rollback and diff analysis.</p></article>
-          <article class="glass-card reveal"><h3>Scheduler + Re-index</h3><p>Cron/queue orchestration for periodic updates and selective re-embedding.</p></article>
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Pipeline Components</h2><p>Designed as an ingestion control plane: source adapters, canonical normalization, version graphing, and policy-driven reindex scheduling.</p></div>
+        <article class="tech-peek reveal detail-spaced">
+          <pre class="code-peek"><code>source registry -> connector fetch -> normalize + redact -> chunk + checksum
+      |                |                    |                 |
+      v                v                    v                 v
+change detector   parse contracts     metadata enrich      version graph
+      |                                                        |
+      v                                                        v
+ reindex planner -> queue worker -> index upsert -> freshness monitor</code></pre>
+          <p class="peek-why"><strong>Why this matters:</strong> ingestion runs become reproducible and rollback-safe while minimizing unnecessary re-embedding cost.</p>
+        </article>
+        <div class="cards-3 detail-spaced">
+          <article class="glass-card reveal"><h3>Connector + Validation Layer</h3><p>Fetches PDF/URL/markdown sources with source-type contracts, parse checks, and failure taxonomy.</p></article>
+          <article class="glass-card reveal"><h3>Versioned Content Pipeline</h3><p>Normalized chunks are fingerprinted and mapped into immutable version snapshots for traceable updates.</p></article>
+          <article class="glass-card reveal"><h3>Incremental Reindex Engine</h3><p>Only changed documents enqueue indexing work, with retry/backoff, idempotency, and freshness windows.</p></article>
         </div>
       </div></section>
 
@@ -54,7 +64,147 @@
           <p class="path-note">Presentation path: <code>projects/knowledge-base-builder/presentations/upcoming/</code></p>
         </article>
       </div></section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Deterministic Ingestion Control Loop</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>def run_ingestion_cycle(env: IngestionEnv) -> IngestionRun:
+    fetched = connector_hub.fetch_all(env.sources)
+    normalized = [normalize_source(item, policy=env.policy) for item in fetched]
+    planned = planner.compute_delta(normalized, latest_version=versions.latest(env.pipeline_id))
+
+    if not planned.changed_sources:
+        return build_noop_run(env, planned)
+
+    chunks = chunk_builder.build(planned.changed_sources, chunk_policy=env.policy.chunking)
+    run_version = versions.create_run_version(env.pipeline_id, chunks=chunks)
+
+    queue.enqueue(IndexTask(version_id=run_version.version_id, chunks=chunks))
+    worker.process_pending(indexer=indexer, retries=env.policy.retry_budget)
+
+    freshness.record(run_version.version_id, changed=len(planned.changed_sources))
+    scheduler.ensure_job(env.pipeline_id, cron=env.policy.reindex_cron)
+
+    return finalize_run(env, run_version, planned)</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#kb-builder-code-modal"
+                data-snippet-path="../../docs/snippets/knowledge_base_builder_ingestion.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> version-bound indexing creates reproducible rollback points and
+              prevents stale or partially ingested data from corrupting retrieval quality.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Source Fingerprinting + Deduplication</h3>
+                <p>
+                  All incoming sources are normalized and checksummed before processing so unchanged documents are
+                  skipped and duplicate payloads do not trigger redundant embedding cycles.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> ingestion cost and latency stay predictable as content grows.
+                </p>
+              </div>
+              <p class="cap-meta">Efficiency</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Immutable Version Graph</h3>
+                <p>
+                  Each ingestion run creates version snapshots tied to source fingerprints, enabling exact rollback and
+                  side-by-side comparison between historical index states.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> retrieval regressions can be traced to specific content changes.
+                </p>
+              </div>
+              <p class="cap-meta">Reproducibility</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Source-Type Normalization Contracts</h3>
+                <p>
+                  PDF, URL, and markdown adapters map to one canonical chunk schema with consistent metadata fields
+                  for source, section, and timestamp.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> downstream retrieval quality remains stable across mixed inputs.
+                </p>
+              </div>
+              <p class="cap-meta">Data Quality</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Incremental Reindex Scheduler</h3>
+                <p>
+                  Scheduled runs target only changed or stale segments, avoiding full re-embedding when unnecessary
+                  while preserving freshness SLOs.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> system scale improves without sacrificing update cadence.
+                </p>
+              </div>
+              <p class="cap-meta">Scalability</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Failure Taxonomy + Replay Workflow</h3>
+                <p>
+                  Parse, network, and index failures are categorized with replay-safe job IDs so operators can recover
+                  specific steps instead of rerunning full pipelines.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> incident resolution becomes faster and less disruptive.
+                </p>
+              </div>
+              <p class="cap-meta">Operations</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="kb-builder-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="kb-builder-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="kb-builder-code-title">Knowledge Base Builder · Full Ingestion Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>

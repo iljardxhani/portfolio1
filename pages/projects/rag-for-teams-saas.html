@@ -16,11 +16,11 @@
     <canvas id="mesh-canvas" aria-hidden="true"></canvas>
     <div class="bg-overlay" aria-hidden="true"></div>
     <header class="site-header"><div class="container">
-      <a class="brand" href="../../portfolio.html"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
+      <a class="brand" href="../../portfolio.html" target="_blank" rel="noreferrer"><span class="brand-mark"></span><span>Iljard <strong>Xhani</strong> · AI Engineering</span></a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../../portfolio.html">Home</a><a href="./index.html" aria-current="page">Projects</a><a href="../process.html">Process</a><a href="../about.html">About</a><a href="../contact.html">Contact</a>
+        <a href="../../portfolio.html" target="_blank" rel="noreferrer">Home</a><a href="./index.html" aria-current="page" target="_blank" rel="noreferrer">Projects</a><a href="../process.html" target="_blank" rel="noreferrer">Process</a><a href="../about.html" target="_blank" rel="noreferrer">About</a><a href="../contact.html" target="_blank" rel="noreferrer">Contact</a>
       </nav>
-      <a class="btn small primary" href="../../prop_cv_mockup_exact.pdf" target="_blank" rel="noreferrer">Download CV</a>
+      <a class="btn small primary" href="../../Iljard_Xhani_CV.pdf" target="_blank" rel="noreferrer">Download CV</a>
     </div></header>
 
     <main class="page-main">
@@ -35,11 +35,21 @@
         </div>
       </div></div></section>
 
-      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Product Systems</h2></div>
-        <div class="cards-3">
-          <article class="glass-card reveal"><h3>Identity + Tenancy</h3><p>User/org boundaries, role-based permissions, and workspace-specific data isolation.</p></article>
-          <article class="glass-card reveal"><h3>Billing + Quotas</h3><p>Stripe test flow, request quotas, and plan-aware rate limiting for API endpoints.</p></article>
-          <article class="glass-card reveal"><h3>Governance</h3><p>Audit logs, admin monitoring, and request trace history for operational review.</p></article>
+      <section><div class="container"><div class="section-head reveal"><p class="section-kicker">Architecture</p><h2>Product Systems</h2><p>Designed as a tenant-governed runtime: identity-scoped authorization, plan entitlements, usage metering, and auditable control operations.</p></div>
+        <article class="tech-peek reveal detail-spaced">
+          <pre class="code-peek"><code>access token -> claims verify -> org/user binding -> feature + incident policy
+      |                |                |                    |
+      v                v                v                    v
+ auth context     role + scope     tenant isolation     safety guardrails
+      |                                                        |
+      v                                                        v
+rate + quota control -> RAG answer -> usage meter -> billing line -> audit/event log</code></pre>
+          <p class="peek-why"><strong>Why this matters:</strong> every query is treated as a governed platform transaction, not just an LLM call.</p>
+        </article>
+        <div class="cards-3 detail-spaced">
+          <article class="glass-card reveal"><h3>Identity + Tenant Isolation</h3><p>Token claims are bound to org and role context before any retrieval, billing, or admin action is allowed.</p></article>
+          <article class="glass-card reveal"><h3>Usage + Billing Control Plane</h3><p>Per-plan rate limits, token quota checks, and invoice line generation are executed in the request path.</p></article>
+          <article class="glass-card reveal"><h3>Audit + Incident Governance</h3><p>Every decision path writes structured audit events with incident policy override traces for operations review.</p></article>
         </div>
       </div></section>
 
@@ -55,7 +65,150 @@
           <p class="path-note">Presentation path: <code>projects/rag-for-teams-saas/presentations/upcoming/</code></p>
         </article>
       </div></section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Technical Peek</p>
+            <h2>Governed Tenant Runtime</h2>
+          </div>
+          <article class="tech-peek reveal">
+            <pre class="code-peek"><code>def process_team_query(env: RequestEnvelope) -> dict[str, Any]:
+    started = time.perf_counter()
+    ctx = platform.authorize(env.token, env.request_id)
+    policy = plans.get(ctx.org.tier)
+    top_k = clamp_top_k(env.top_k, policy)
+
+    platform.assert_org_state(ctx.org)
+    platform.assert_feature_gate(ctx, env.endpoint, policy)
+    platform.assert_incident_policy(ctx=ctx, endpoint=env.endpoint, incident=incident)
+    platform.assert_safety(env.query, ctx.org)
+
+    rate = platform.enforce_rate_limit(ctx, env.endpoint, policy)
+    answer = rag.answer(org_id=ctx.org.org_id, query=env.query, top_k=top_k, mode=env.mode)
+    latency_ms = int((time.perf_counter() - started) * 1000)
+
+    quota, billed_cents = platform.record_usage_and_billing(
+        ctx=ctx, env=env, answer=answer, latency_ms=latency_ms, policy=policy
+    )
+    platform.write_query_audit(...)
+    platform.write_admin_event(...)</code></pre>
+            <div class="hero-actions peek-actions">
+              <button
+                class="btn ghost small"
+                type="button"
+                data-open-code-modal
+                data-modal-target="#saas-code-modal"
+                data-snippet-path="../../docs/snippets/rag_for_teams_saas_platform.py"
+              >
+                Open Full Code Preview
+              </button>
+            </div>
+            <p class="peek-why">
+              <strong>Why this matters:</strong> tenant isolation, monetization, and compliance are enforced directly
+              in runtime orchestration instead of being bolted on later.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="section-kicker">Advanced Breakdown</p>
+            <h2>Most Important Engineering Decisions</h2>
+          </div>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>1. Hard Tenant Isolation Across Layers</h3>
+                <p>
+                  Auth context is bound to org IDs at API, data, and retrieval layers so vector queries, database
+                  reads, and audit trails all enforce the same tenant boundary.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> cross-organization data leakage is blocked by architecture, not
+                  convention.
+                </p>
+              </div>
+              <p class="cap-meta">Security</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>2. Plan Entitlements + Feature Gates</h3>
+                <p>
+                  Product capabilities are controlled by explicit entitlement checks per plan, separating permission
+                  logic from UI and preventing unauthorized backend access.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> monetization rules are enforceable and testable server-side.
+                </p>
+              </div>
+              <p class="cap-meta">Monetization</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>3. Quota + Burst Rate-Limit Enforcement</h3>
+                <p>
+                  Per-tenant request quotas and burst throttles protect shared infrastructure while maintaining fair
+                  performance between organizations on different usage profiles.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> a few heavy tenants cannot degrade service for everyone else.
+                </p>
+              </div>
+              <p class="cap-meta">Platform Stability</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>4. Auditable Platform Event Model</h3>
+                <p>
+                  Auth actions, retrieval operations, billing state changes, and admin interventions are captured as
+                  structured events for compliance and debugging.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> enterprise trust depends on traceable behavior and governance.
+                </p>
+              </div>
+              <p class="cap-meta">Governance</p>
+            </article>
+            <article class="capability-item reveal">
+              <div>
+                <h3>5. Admin Controls + Safety Switches</h3>
+                <p>
+                  Minimal admin panel capabilities include tenant suspend, rate override, and incident-level request
+                  disable switches for fast operational response.
+                </p>
+                <p class="peek-why">
+                  <strong>Why this matters:</strong> incidents can be contained without emergency code deployments.
+                </p>
+              </div>
+              <p class="cap-meta">Operations</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <div
+      class="code-modal"
+      id="saas-code-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="saas-code-title"
+    >
+      <div class="code-modal-shell">
+        <div class="code-modal-head">
+          <h2 id="saas-code-title">RAG for Teams SaaS · Full Platform Excerpt</h2>
+          <button class="btn ghost small" type="button" data-close-code-modal>Close</button>
+        </div>
+        <p class="code-modal-hint">Read-only preview mode.</p>
+        <div class="code-modal-body">
+          <pre class="code-peek code-peek-full" data-code-content tabindex="0">Loading code...</pre>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer"><p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p></footer>
     <script src="../../assets/js/main.js" defer></script>
