@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/portfolio.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
