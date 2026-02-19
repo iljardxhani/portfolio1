@@ -995,7 +995,6 @@ a.project-card {
   margin-top: 0.76rem;
 }
 
-/* Projects page: reduce stacked-card look and use cleaner rail rows */
 .projects-page .projects-showcase {
   gap: 1.35rem;
 }
