@@ -61,6 +61,31 @@
         font-size: 13px;
       }
 
+      .header-inner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .header-text {
+        flex: 1;
+      }
+
+      .profile-photo {
+        width: 110px;
+        height: 110px;
+        border-radius: 4px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .profile-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+      }
+
       .section {
         margin-top: 10px;
       }
@@ -109,6 +134,10 @@
         margin-top: 1px;
       }
 
+      @page {
+        margin: 0;
+      }
+
       @media print {
         .page {
           margin: 0;
@@ -121,9 +150,18 @@
   <body>
     <main class="page">
       <header>
-        <h1>Iljard Xhani</h1>
-        <p class="role">AI Application Engineer (LLM + RAG + Reliability)</p>
-        <p class="contact">xhani.iljard@gmail.com</p>
+        <div class="header-inner">
+          <div class="header-text">
+            <h1>Iljard Xhani</h1>
+            <p class="role">AI Application Engineer (LLM + RAG + Reliability)</p>
+            <p class="contact">
+              xhani.iljard@gmail.com &nbsp;·&nbsp; Albanian &nbsp;·&nbsp; Born 27 July 2006
+            </p>
+          </div>
+          <div class="profile-photo">
+            <img src="assets/images/4787.jpg" alt="Iljard Xhani" />
+          </div>
+        </div>
       </header>
 
       <section class="section">
