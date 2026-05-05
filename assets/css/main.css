@@ -668,6 +668,152 @@ section {
   max-width: 920px;
 }
 
+/* ── Notes page ─────────────────────────────────────── */
+
+.notes-layout-section {
+  padding-top: 0;
+}
+
+.notes-layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Sidebar */
+.notes-sidebar {
+  position: sticky;
+  top: 5.5rem;
+  padding-top: 0.4rem;
+}
+
+.notes-nav {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.notes-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.92rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+}
+
+.notes-nav-item:hover {
+  color: var(--text);
+  background: rgba(106, 156, 208, 0.08);
+}
+
+.notes-nav-item.active {
+  color: var(--cyan);
+  background: rgba(18, 212, 255, 0.08);
+}
+
+.notes-sidebar-count {
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(106, 156, 208, 0.18);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Feed */
+.notes-feed {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual post */
+.notes-post {
+  padding: 2.8rem 0;
+  border-bottom: 1px solid rgba(106, 156, 208, 0.18);
+}
+
+.notes-post:first-child {
+  padding-top: 0.4rem;
+}
+
+.notes-post:last-child {
+  border-bottom: none;
+}
+
+.notes-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.notes-post h2 {
+  font-size: 1.45rem;
+  line-height: 1.35;
+  margin-bottom: 1.4rem;
+  max-width: 640px;
+}
+
+.notes-post-body p {
+  color: var(--muted);
+  line-height: 1.82;
+  font-size: 1rem;
+  max-width: 660px;
+}
+
+.notes-post-body p + p {
+  margin-top: 1.1rem;
+}
+
+.notes-post-body em {
+  color: var(--text);
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* Tags & time (shared with testimonials) */
+.note-tag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.69rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+}
+
+.note-tag-rag {
+  background: rgba(18, 212, 255, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(18, 212, 255, 0.28);
+}
+
+.note-tag-eval {
+  background: rgba(37, 227, 180, 0.1);
+  color: var(--teal);
+  border: 1px solid rgba(37, 227, 180, 0.28);
+}
+
+.note-tag-prod {
+  background: rgba(110, 167, 255, 0.1);
+  color: var(--blue);
+  border: 1px solid rgba(110, 167, 255, 0.28);
+}
+
+.note-time {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
 .testimonial-grid {
   margin-top: 0.6rem;
   display: grid;
@@ -1741,6 +1887,48 @@ body.code-modal-open {
   .testimonial-grid {
     grid-template-columns: 1fr;
     gap: 1.4rem;
+  }
+
+  .notes-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .notes-sidebar {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .notes-sidebar .section-kicker {
+    display: none;
+  }
+
+  .notes-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 0;
+    gap: 0.4rem;
+  }
+
+  .notes-nav-item {
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(106, 156, 208, 0.22);
+    border-radius: 999px;
+    font-size: 0.82rem;
+  }
+
+  .notes-nav-item.active {
+    border-color: var(--cyan);
+  }
+
+  .notes-sidebar-count {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    margin-left: auto;
   }
 
   .story-grid {

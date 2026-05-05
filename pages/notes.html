@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes | Iljard Xhani</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="editorial">
+    <canvas id="mesh-canvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/">
+          <span class="brand-mark"></span>
+          <span>Iljard <strong>Xhani</strong> · AI Engineering</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/">Home</a>
+          <a href="/projects">Projects</a>
+          <a href="/process">Process</a>
+          <a href="/notes" aria-current="page">Notes</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+        </nav>
+        <a class="btn small primary" href="../Iljard_Xhani_CV.pdf">Download CV</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="hero page-hero page-hero-compact">
+        <div class="container">
+          <div class="hero-panel hero-panel-left reveal">
+            <p class="eyebrow">Notes</p>
+            <h1>Things I've Learned Building AI in Production.</h1>
+            <p class="lede">
+              Short, focused pieces from real projects. What works, what breaks, and why.
+              No theory for theory's sake; only patterns I've actually run into.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="notes-layout-section">
+        <div class="container">
+          <div class="notes-layout">
+
+            <!-- Sticky sidebar -->
+            <aside class="notes-sidebar">
+              <p class="section-kicker">Filter</p>
+              <nav class="notes-nav" role="group" aria-label="Filter by category">
+                <button class="notes-nav-item active" data-filter="all">All Notes</button>
+                <button class="notes-nav-item" data-filter="rag">RAG &amp; Retrieval</button>
+                <button class="notes-nav-item" data-filter="eval">Evaluation</button>
+                <button class="notes-nav-item" data-filter="prod">Production</button>
+              </nav>
+              <div class="notes-sidebar-count">
+                <span id="notes-visible-count">12</span> notes
+              </div>
+            </aside>
+
+            <!-- Articles feed -->
+            <div class="notes-feed" id="notes-feed">
+
+              <!-- POST 1 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>What is RAG; and why most teams get it wrong</h2>
+                <div class="notes-post-body">
+                  <p>
+                    RAG — Retrieval-Augmented Generation — connects an LLM to a search system so it
+                    can answer questions based on your actual documents, not just its training data.
+                    The idea sounds straightforward. The execution is where most teams lose months,
+                    trust, and sometimes entire product cycles.
+                  </p>
+                  <p>
+                    The most common mistake is treating the retrieval step as plumbing. Teams embed
+                    documents, retrieve the top-k results, paste them into a prompt, and ship it. It
+                    works in demos. It fails in production — because nobody measured whether the
+                    retrieved context was actually <em>relevant</em>, just whether an answer came back.
+                  </p>
+                  <p>
+                    An LLM is remarkably good at sounding confident with wrong source material. It will
+                    take whatever context you give it and construct a fluent, authoritative response.
+                    Your users will lose trust in the system long before your dashboards catch anything.
+                    The failure is invisible until it's a cultural problem inside your company.
+                  </p>
+                  <p>
+                    The fix starts with measuring retrieval separately from generation. Track what was
+                    retrieved, why it was selected, and whether it was genuinely useful to answering the
+                    query. That gap — between what was retrieved and what should have been retrieved —
+                    is where almost all RAG quality problems actually live.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 2 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>The 15% problem; why your assistant sounds confident and wrong</h2>
+                <div class="notes-post-body">
+                  <p>
+                    In an untuned RAG system, somewhere between 10 and 20% of queries return context
+                    that doesn't actually answer the question. The number varies by domain, document
+                    quality, and chunk strategy — but in my experience, 15% is a reasonable baseline
+                    for what you're starting with before any retrieval tuning.
+                  </p>
+                  <p>
+                    The LLM doesn't know the context is bad. It uses whatever you give it to construct
+                    a fluent, professional-sounding response. Users don't see the retrieved context —
+                    they just see an answer. And the answer is subtly wrong in a way that's hard to
+                    pinpoint. Not obviously broken. Just slightly off.
+                  </p>
+                  <p>
+                    They trust it once. Maybe twice. Then they stop using the system entirely and rarely
+                    tell you why. Support tickets don't say "the retrieval quality was low." They say "the
+                    AI doesn't really work." By the time you hear that, trust has already collapsed.
+                  </p>
+                  <p>
+                    The solution isn't a better model. It's better retrieval tuning plus a way to detect
+                    low-confidence retrievals before the answer reaches the user. Cosine similarity
+                    thresholds, fallback routing, and retrieval-specific eval metrics are the tools.
+                    They're not glamorous. They're what separates a RAG system that holds up from one
+                    that quietly erodes.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 3 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>Chunking strategy; the invisible decision that shapes retrieval quality</h2>
+                <div class="notes-post-body">
+                  <p>
+                    When you ingest documents into a RAG system you break them into chunks. Most teams
+                    use whatever default the library offers — 512 tokens, fixed-size, overlapping by
+                    50 tokens — and move on. That default is often the single biggest source of
+                    retrieval problems in production, and almost nobody discusses it seriously.
+                  </p>
+                  <p>
+                    Too small: your chunks are fragments without enough context to be useful. The
+                    retrieved passage is part of a sentence, half of a table, or a heading with no
+                    content. Too large: the relevant sentence is buried deep in a long chunk and the
+                    model ignores it in favour of earlier content. Wrong boundaries: you split a
+                    question from its answer, or break a code example across two chunks.
+                  </p>
+                  <p>
+                    Good chunking is document-aware. Markdown should split on headers, not token count.
+                    PDFs need structure detection before chunking. Tabular data often shouldn't be
+                    chunked at all — it should be queried differently. There is no universal setting.
+                    There is only the right setting for your specific documents, and finding it
+                    requires actually looking at what gets retrieved.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 4 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>Hybrid retrieval; when to use it and when it's overkill</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Vector search is good at finding semantically related content even when the exact
+                    words don't match. Keyword search is good at finding exact terms reliably and fast.
+                    Most real-world queries need both at the same time.
+                  </p>
+                  <p>
+                    Consider: "What does our refund policy say about digital products?" A keyword search
+                    finds "refund" and "digital products" instantly. A vector search might find
+                    semantically related passages about purchases, returns, or subscriptions — but miss
+                    the specific policy wording because the vocabulary doesn't overlap closely enough.
+                    Hybrid retrieval using Reciprocal Rank Fusion combines both ranked lists into one
+                    and consistently outperforms either method alone on mixed query types.
+                  </p>
+                  <p>
+                    When is pure vector enough? When your documents are highly technical with consistent
+                    vocabulary, and your users ask in terms that match that vocabulary. When users ask
+                    in natural language about structured content — policies, procedures, product specs —
+                    hybrid is almost always worth the added complexity.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 5 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>Citations in RAG; why they're not optional if you want user trust</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Citations aren't a nice-to-have feature. They're the mechanism that makes a RAG
+                    system trustworthy rather than just functional. When your system answers a question,
+                    the user has no way to verify the answer is grounded in real content — unless you
+                    show them exactly which document, section, or passage it came from.
+                  </p>
+                  <p>
+                    The engineering challenge is tracking provenance through the full pipeline. Not just
+                    which chunks were retrieved, but which ones the model actually relied on when
+                    generating the answer. Most implementations retrieve ten chunks and pass them all
+                    to the model — but the model uses two of them. Showing all ten as "sources" is
+                    misleading. Showing the two that mattered requires attribution at generation time.
+                  </p>
+                  <p>
+                    The pattern that works: instruct the model explicitly to cite the passages it relies
+                    on, parse the citations from the output, and link them back to source documents in
+                    the UI. Users who can verify an answer trust it. Users who trust it keep using it.
+                    That compounding effect on retention is worth the engineering investment.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 6 -->
+              <article class="notes-post reveal" data-category="rag">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-rag">RAG &amp; Retrieval</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>Session memory; making a RAG assistant that actually follows the conversation</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Stateless RAG is easier to build but worse to use. Every query is treated as
+                    independent. The user asks about your leave policy, gets a good answer, then asks
+                    "how do I apply for that?" — and the system has no idea what "that" refers to.
+                    It retrieves documents about applying for things in general, or fails entirely.
+                  </p>
+                  <p>
+                    Session memory maintains a rolling context of prior conversation turns. The
+                    practical approach: summarise recent turns into a compact context string, prepend
+                    it to the retrieval query, and include it in the generation prompt. A 3-turn
+                    window is usually enough to make the system feel like it's listening. A 10-turn
+                    window risks letting stale context pollute current queries.
+                  </p>
+                  <p>
+                    The tricky decisions: when to summarise vs truncate old turns, how to handle
+                    topic shifts mid-conversation, and how to prevent the model from anchoring on
+                    old context when a new question is completely unrelated. There's no universal
+                    answer — it depends on your query patterns. But even the simplest memory
+                    implementation dramatically improves how the system feels to real users.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 7 -->
+              <article class="notes-post reveal" data-category="eval">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-eval">Evaluation</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>How eval gates work; and why they matter more than the model you chose</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Most AI engineering conversations obsess over model selection. GPT-4o vs Claude
+                    vs Gemini. Temperature. Context window size. These decisions matter, but they're
+                    the wrong obsession. The more important question is: how do you know if any
+                    change you made — to the prompt, the retrieval, the chunking, anything — made
+                    the system better or worse?
+                  </p>
+                  <p>
+                    An eval gate is a pre-release check that scores your system against a curated
+                    set of questions with known-good answers. Before any code ships, the gate runs
+                    automatically. If faithfulness drops below the threshold, if p95 latency goes
+                    above the budget, if relevance scores regress — the release is blocked. No
+                    exceptions, no "we'll fix it in the next release."
+                  </p>
+                  <p>
+                    Building the benchmark dataset is the hard part. It requires domain knowledge,
+                    real user queries, and answers verified by someone who knows the content. That
+                    work can't be automated and it can't be skipped. But once it exists, every
+                    future release is defensible, every regression is caught before users see it,
+                    and the team gains confidence to ship faster because they know the safety net
+                    is actually there.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 8 -->
+              <article class="notes-post reveal" data-category="eval">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-eval">Evaluation</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>Faithfulness vs relevance; they're not the same metric and you need both</h2>
+                <div class="notes-post-body">
+                  <p>
+                    These two metrics are frequently confused and sometimes used interchangeably.
+                    They measure completely different things and both need to pass before a release
+                    ships.
+                  </p>
+                  <p>
+                    Faithfulness measures whether the generated answer is grounded in the retrieved
+                    context. A faithful answer contains no hallucinated details — every claim can be
+                    traced back to a source passage. A faithfulness score below 0.85 means your
+                    system is regularly inventing facts, even if the overall topic is correct.
+                  </p>
+                  <p>
+                    Relevance measures whether the retrieved context actually addresses the user's
+                    question. You can have perfect faithfulness and terrible relevance — the answer
+                    is entirely grounded in real content, but that content was about the wrong thing.
+                    You can have high relevance and low faithfulness — right topic, invented details.
+                    The target is high on both. Measuring only one gives you false confidence and
+                    production problems you didn't see coming.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 9 -->
+              <article class="notes-post reveal" data-category="prod">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-prod">Production</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>Why your AI feature worked in the demo and broke in production</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Demo environments lie. Not maliciously — structurally. In a demo: the questions
+                    are prepared in advance, the documents are clean and up to date, the retrieval
+                    has been implicitly tuned to those specific queries, and the person running the
+                    demo knows exactly which edge cases to avoid. Everything is controlled.
+                  </p>
+                  <p>
+                    Production is the opposite. Questions are unpredictable and often phrased in ways
+                    you never anticipated. Documents are messy, outdated, or missing the answer
+                    entirely. Nobody avoids the bad cases — they just get bad answers. The variance
+                    you never saw in demos becomes your daily reality.
+                  </p>
+                  <p>
+                    The gap between demo and production isn't a model problem or a prompt problem.
+                    It's a measurement problem. Without eval runs that compare system outputs to
+                    known-good answers across a representative query set before every single release,
+                    you are shipping blind. The demo worked because you knew the answers ahead of
+                    time. Production fails because you don't — and you have no instrument to measure
+                    the difference.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 10 -->
+              <article class="notes-post reveal" data-category="prod">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-prod">Production</span>
+                  <span class="note-time">3 min read</span>
+                </div>
+                <h2>p95 latency; the only latency metric that actually tells you the truth</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Average latency is almost useless as a production metric. Here's why: if 95% of
+                    your requests complete in 800ms and 5% take 12 seconds, your average looks
+                    perfectly healthy. Your users experience the 12-second requests as "the AI is
+                    broken" and they are not wrong. The average hides the outliers. The outliers are
+                    what users remember.
+                  </p>
+                  <p>
+                    p95 latency — the 95th percentile — tells you what your slowest-but-common
+                    requests look like. It's the honest number. For RAG document Q&amp;A I use 1900ms
+                    as my default p95 budget. Anything above that and users perceive the system as
+                    slow regardless of how accurate the answers are. Accuracy without speed is a
+                    failed product.
+                  </p>
+                  <p>
+                    In RAG systems, p95 latency has three drivers: embedding time, retrieval time,
+                    and generation time. Retrieval is usually the easiest to optimise — index tuning,
+                    reducing result limits, and caching frequent queries. Generation latency is largely
+                    model-determined. Set the budget before you start optimising, not after. The
+                    constraint forces better decisions.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 11 -->
+              <article class="notes-post reveal" data-category="prod">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-prod">Production</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>Auth and tenant isolation; the problem nobody takes seriously until it's too late</h2>
+                <div class="notes-post-body">
+                  <p>
+                    When you build a single-tenant prototype, auth feels like boring infrastructure
+                    work — necessary but not interesting. When you move to multi-tenant, it becomes
+                    the most critical part of the entire system. Get it wrong and user A can retrieve
+                    documents that belong to user B. That's not a theoretical risk. It's a real
+                    failure mode that happens when isolation is treated as an afterthought.
+                  </p>
+                  <p>
+                    The common failure points: row-level security misconfigured at the database layer,
+                    vector store namespaces accidentally shared between tenants, API middleware that
+                    trusts tenant IDs from the client rather than verifying from the token. Any one
+                    of these is enough to create a data leak.
+                  </p>
+                  <p>
+                    The pattern that prevents it: enforce tenant isolation at every layer
+                    independently. Database filters, vector store namespaces, and API middleware
+                    should each enforce isolation without assuming the other layers did it correctly.
+                    Then write a dedicated test suite that specifically attempts to cross tenant
+                    boundaries. If those tests pass, you have confidence. If they don't exist, you
+                    have hope — which is not the same thing.
+                  </p>
+                </div>
+              </article>
+
+              <!-- POST 12 -->
+              <article class="notes-post reveal" data-category="prod">
+                <div class="notes-post-meta">
+                  <span class="note-tag note-tag-prod">Production</span>
+                  <span class="note-time">4 min read</span>
+                </div>
+                <h2>Fallback behavior; what your system should do when it doesn't know</h2>
+                <div class="notes-post-body">
+                  <p>
+                    Every RAG system has a knowledge boundary. Questions outside that boundary are
+                    inevitable — users will always ask things your documents don't cover. What happens
+                    at that boundary matters more than almost any other product decision you'll make.
+                  </p>
+                  <p>
+                    The wrong behavior is what an unconstrained LLM does by default: use whatever
+                    context exists to construct a plausible-sounding answer. The answer might be
+                    technically coherent. It will not be grounded in your documents. Users who act on
+                    it will get wrong results and they will blame the product, not the query. A single
+                    confident wrong answer does more damage to user trust than ten "I don't know"
+                    responses ever could.
+                  </p>
+                  <p>
+                    The right behavior: detect when retrieval confidence is low — cosine similarity
+                    below a threshold is the practical proxy — and return an explicit, honest response.
+                    Something like "I don't have reliable information on this in the current knowledge
+                    base." Then optionally route to a human, a different system, or a support channel.
+                    Users tolerate not-knowing far better than confident wrong answers. A trust
+                    collapse is far harder to recover from than a well-handled gap in knowledge.
+                  </p>
+                </div>
+              </article>
+
+            </div><!-- /notes-feed -->
+          </div><!-- /notes-layout -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Iljard Xhani · AI Application Engineer Portfolio</p>
+    </footer>
+
+    <script src="../assets/js/main.js" defer></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const pills = document.querySelectorAll('.notes-nav-item');
+        const posts = document.querySelectorAll('.notes-post');
+        const counter = document.getElementById('notes-visible-count');
+
+        function updateCount() {
+          const visible = [...posts].filter(p => p.style.display !== 'none').length;
+          if (counter) counter.textContent = visible;
+        }
+
+        pills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            const filter = pill.dataset.filter;
+            posts.forEach(post => {
+              const show = filter === 'all' || post.dataset.category === filter;
+              post.style.display = show ? '' : 'none';
+            });
+            updateCount();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

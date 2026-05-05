@@ -21,6 +21,11 @@
       "permanent": true
     },
     {
+      "source": "/pages/notes.html",
+      "destination": "/notes",
+      "permanent": true
+    },
+    {
       "source": "/pages/projects/index.html",
       "destination": "/projects",
       "permanent": true
@@ -47,6 +52,10 @@
     {
       "source": "/contact",
       "destination": "/pages/contact.html"
+    },
+    {
+      "source": "/notes",
+      "destination": "/pages/notes.html"
     },
     {
       "source": "/projects",
