@@ -54,9 +54,9 @@
             <div class="token-row proof-bar" role="list" aria-label="Proof markers">
               <span class="token" role="listitem">6 case studies</span>
               <span class="token" role="listitem">Architecture diagrams</span>
-              <span class="token" role="listitem">Eval reports</span>
-              <span class="token" role="listitem">Trace screenshots</span>
-              <span class="token" role="listitem">Deploy notes</span>
+              <span class="token" role="listitem">Real code snippets</span>
+              <span class="token" role="listitem">Eval gate thresholds</span>
+              <span class="token" role="listitem">Decision reasoning</span>
             </div>
             <div class="hero-actions">
               <a class="btn primary" href="/projects">View Case Studies</a>
@@ -74,35 +74,34 @@
       <section>
         <div class="container">
           <div class="section-head reveal">
-            <p class="section-kicker">Hiring Snapshot</p>
-            <h2>Here's What the First 90 Days Actually Look Like.</h2>
-            <p>I move fast, but I don't skip the parts that matter.</p>
+            <p class="section-kicker">How I Work</p>
+            <h2>Fast to Start, Careful Before Shipping.</h2>
+            <p>I don't need a long ramp-up. But I won't ship something I can't measure.</p>
           </div>
           <div class="story-grid">
             <article class="story-block reveal">
-              <h3>First 30 Days</h3>
+              <h3>When I start</h3>
               <p>
-                I dig into what's actually going on; not just the brief, but the real system. Then I map
-                what's broken to what we can realistically ship.
+                I read the code, talk to the people closest to the problem, and find the gap between
+                what the system does and what the team actually needs it to do. That usually takes a
+                week, not a month.
               </p>
               <div class="token-row">
-                <span class="token">Architecture Audit</span>
-                <span class="token">KPI Baseline</span>
-                <span class="token">Risk Register</span>
-                <span class="token">Delivery Plan</span>
+                <span class="token">Read the system</span>
+                <span class="token">Find the real gap</span>
+                <span class="token">Ship something small first</span>
               </div>
             </article>
             <article class="story-block reveal">
-              <h3>By Day 90</h3>
+              <h3>What I deliver</h3>
               <p>
-                Something real is in production; tested, monitored, and set up so the team can keep
-                improving it without me holding their hand.
+                Working AI features with eval gates already in place; so the team can keep improving
+                without me in the room. Not just code — a system the team can own.
               </p>
               <div class="token-row">
-                <span class="token">Production Workflow</span>
-                <span class="token">Eval Gates</span>
-                <span class="token">Monitoring</span>
-                <span class="token">Iteration Playbook</span>
+                <span class="token">Production-ready</span>
+                <span class="token">Eval gates included</span>
+                <span class="token">Team can own it</span>
               </div>
             </article>
           </div>
@@ -246,48 +245,31 @@
       <section>
         <div class="container">
           <div class="section-head reveal">
-            <p class="section-kicker">What Teams Say</p>
-            <h2>From Engineers and Leaders Who've Worked With Me.</h2>
+            <p class="section-kicker">The Proof</p>
+            <h2>The Projects Show It; Not Just Describe It.</h2>
+            <p>Every case study includes the actual architecture, real code you can read, and the specific thresholds used — not a summary of what was done, but evidence of how.</p>
           </div>
-          <div class="testimonial-grid">
-            <article class="testimonial-card reveal">
-              <blockquote>
-                We'd shipped our RAG assistant twice before Iljard joined. Both times, users stopped
-                trusting it within six weeks; and we never knew why until he ran the first eval pass.
-                Turned out our retrieval was returning confident-sounding nonsense on around 15% of
-                queries. He had it instrumented, benchmarked, and fixed in under two weeks. I've worked
-                with engineers who are fast and engineers who are careful. I hadn't met many who are both.
-              </blockquote>
-              <div class="testimonial-attr">
-                <strong>Sarah Mitchell</strong>
-                <span>Head of Product · Convex AI</span>
+          <div class="capability-list">
+            <article class="capability-item reveal">
+              <div>
+                <h3>Code you can read in every project</h3>
+                <p>Not pseudocode or high-level diagrams. Real implementation patterns — answer controllers, eval orchestrators, tenant isolation logic — that you can open and discuss line by line.</p>
               </div>
+              <p class="cap-meta">Verifiable · Readable</p>
             </article>
-            <article class="testimonial-card reveal">
-              <blockquote>
-                What I didn't expect was how quickly he understood what we actually needed versus what
-                we asked for. Most engineers execute the brief; Iljard pushes back on the parts that
-                would hurt us later, then executes everything else fast. The eval framework he built is
-                still running every release eighteen months later. That's the sign of someone who builds
-                to last, not to impress.
-              </blockquote>
-              <div class="testimonial-attr">
-                <strong>James Okafor</strong>
-                <span>VP Engineering · Lumen Systems</span>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Thresholds, not vague targets</h3>
+                <p>Faithfulness &ge; 0.88. p95 latency &le; 1900ms. Pass rate &ge; 0.90. These are the actual gate values configured in the eval lab — specific enough to block a bad release.</p>
               </div>
+              <p class="cap-meta">Measurable · Specific</p>
             </article>
-            <article class="testimonial-card reveal">
-              <blockquote>
-                I hired him to build one RAG pipeline. What he actually did was change how our whole
-                team thinks about shipping AI. He kept asking "how will we know if this is getting worse
-                over time?" until everyone started asking it too. Six months in, we had a release process
-                that other teams began copying. He's the kind of engineer who makes everyone around him
-                better; and those people are genuinely hard to find.
-              </blockquote>
-              <div class="testimonial-attr">
-                <strong>Priya Sharma</strong>
-                <span>AI Engineering Lead · Fieldstone Labs</span>
+            <article class="capability-item reveal">
+              <div>
+                <h3>Every decision has a reason attached</h3>
+                <p>Each architecture choice in the case studies includes a "Why this matters" note — what problem it solves and what breaks if you skip it. The thinking is documented, not just the outcome.</p>
               </div>
+              <p class="cap-meta">Reasoned · Documented</p>
             </article>
           </div>
         </div>
