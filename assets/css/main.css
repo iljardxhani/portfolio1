@@ -668,6 +668,60 @@ section {
   max-width: 920px;
 }
 
+.testimonial-grid {
+  margin-top: 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  padding: 1.6rem 1.8rem;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--cyan);
+}
+
+.testimonial-card blockquote {
+  color: var(--muted);
+  line-height: 1.72;
+  font-size: 0.97rem;
+  font-style: italic;
+}
+
+.testimonial-card blockquote::before {
+  content: '\201C';
+  font-size: 2.4rem;
+  color: var(--cyan);
+  line-height: 0;
+  vertical-align: -0.55em;
+  margin-right: 0.15rem;
+  font-family: Georgia, serif;
+  font-style: normal;
+}
+
+.testimonial-attr {
+  margin-top: 1.3rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(106, 156, 208, 0.15);
+}
+
+.testimonial-attr strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.testimonial-attr span {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.02em;
+}
+
 .section-kicker {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.76rem;
@@ -1684,6 +1738,11 @@ body.code-modal-open {
 }
 
 @media (max-width: 1040px) {
+  .testimonial-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
   .story-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
