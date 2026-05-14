@@ -57,20 +57,10 @@ a {
 }
 
 #mesh-canvas {
-  display: none;
-}
-
-/* CSS dot-grid replaces the canvas — no JS, no CPU cost */
-body::before {
-  content: "";
   position: fixed;
   inset: 0;
   z-index: -3;
   pointer-events: none;
-  background-image: radial-gradient(circle 1px at 1px 1px, rgba(98, 152, 205, 0.22) 0%, transparent 100%);
-  background-size: 38px 38px;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.8) 50%, #000 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.8) 50%, #000 100%);
 }
 
 .bg-overlay {
@@ -79,20 +69,14 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 110% 55% at 50% 0%, rgba(18, 212, 255, 0.13) 0%, rgba(37, 227, 180, 0.04) 42%, transparent 68%),
+    radial-gradient(circle at 50% 34%, rgba(13, 23, 36, 0.12), transparent 58%),
     linear-gradient(
       180deg,
-      rgba(2, 6, 11, 0.96) 0%,
-      rgba(2, 6, 11, 0.52) 30%,
-      rgba(2, 6, 11, 0.26) 58%,
-      rgba(2, 6, 11, 0.94) 100%
+      rgba(2, 6, 11, 0.95) 0%,
+      rgba(2, 6, 11, 0.58) 34%,
+      rgba(2, 6, 11, 0.3) 58%,
+      rgba(2, 6, 11, 0.9) 100%
     );
-  animation: glow-breathe 10s ease-in-out infinite;
-}
-
-@keyframes glow-breathe {
-  0%, 100% { opacity: 0.82; }
-  50% { opacity: 1; }
 }
 
 .bg-overlay::after {
