@@ -54,14 +54,14 @@
     let touchPulseY = 0;
     let touchPulsePhase = 0;
 
-    const maxDpr = mobileMeshMode ? 1.12 : lowPowerDevice ? 1.2 : 1.5;
-    const targetFps = mobileMeshMode ? 28 : lowPowerDevice ? 30 : 45;
+    const maxDpr = mobileMeshMode ? 1 : lowPowerDevice ? 1.1 : 1.25;
+    const targetFps = mobileMeshMode ? 22 : lowPowerDevice ? 28 : 34;
     const frameIntervalMs = 1000 / targetFps;
-    const rowSpacing = mobileMeshMode ? 34 : lowPowerDevice ? 28 : 24;
-    const colSpacing = mobileMeshMode ? 56 : lowPowerDevice ? 42 : 36;
-    const dotRowStep = mobileMeshMode ? 4 : lowPowerDevice ? 3 : 2;
-    const dotColStep = mobileMeshMode ? 4 : lowPowerDevice ? 3 : 2;
-    const ribbonSegments = mobileMeshMode ? 72 : lowPowerDevice ? 96 : 128;
+    const rowSpacing = mobileMeshMode ? 42 : lowPowerDevice ? 34 : 30;
+    const colSpacing = mobileMeshMode ? 66 : lowPowerDevice ? 52 : 44;
+    const dotRowStep = mobileMeshMode ? 5 : lowPowerDevice ? 4 : 3;
+    const dotColStep = mobileMeshMode ? 5 : lowPowerDevice ? 4 : 3;
+    const ribbonSegments = mobileMeshMode ? 48 : lowPowerDevice ? 64 : 88;
     const meshLineStrength = mobileMeshMode ? 0.62 : 1;
     const meshDotStrength = mobileMeshMode ? 0.74 : 1;
     let lastFrameTime = -frameIntervalMs;
@@ -113,7 +113,6 @@
       const mu = smoothPointerX * 0.82;
       const mv = clamp((smoothPointerY + 1) * 0.5, 0, 1);
 
-      ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = "#02060b";
       ctx.fillRect(0, 0, w, h);
 
