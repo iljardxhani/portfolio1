@@ -104,8 +104,8 @@
       const horizon = h * (mobileMeshMode ? 0.42 : 0.33);
       const phaseScroll = scrollY * 0.001;
 
-      smoothPointerX += (pointerX - smoothPointerX) * 0.085;
-      smoothPointerY += (pointerY - smoothPointerY) * 0.085;
+      smoothPointerX += (pointerX - smoothPointerX) * 0.048;
+      smoothPointerY += (pointerY - smoothPointerY) * 0.048;
       pointerVX *= 0.92;
       pointerVY *= 0.92;
 
@@ -210,10 +210,10 @@
         0,
         pointerScreenX,
         pointerScreenY,
-        mobileMeshMode ? 240 : 280
+        mobileMeshMode ? 320 : 420
       );
-      glow.addColorStop(0, mobileMeshMode ? "rgba(18,212,255,0.15)" : "rgba(18,212,255,0.2)");
-      glow.addColorStop(0.42, mobileMeshMode ? "rgba(37,227,180,0.05)" : "rgba(37,227,180,0.08)");
+      glow.addColorStop(0, mobileMeshMode ? "rgba(18,212,255,0.055)" : "rgba(18,212,255,0.07)");
+      glow.addColorStop(0.42, mobileMeshMode ? "rgba(37,227,180,0.018)" : "rgba(37,227,180,0.025)");
       glow.addColorStop(1, "rgba(18,212,255,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, w, h);
@@ -760,4 +760,21 @@
   initCodePreviewModal();
 
   window.addEventListener("beforeunload", clearTerminalTimer);
+
+  const lenisScript = document.createElement("script");
+  lenisScript.src = "https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js";
+  lenisScript.onload = () => {
+    const lenis = new window.Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 1.8,
+    });
+    const lenisRaf = (time) => {
+      lenis.raf(time);
+      requestAnimationFrame(lenisRaf);
+    };
+    requestAnimationFrame(lenisRaf);
+  };
+  document.head.appendChild(lenisScript);
 })();
