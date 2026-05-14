@@ -19,8 +19,8 @@
   window.addEventListener("load", syncHeaderHeight);
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const canvas = document.getElementById("mesh-canvas");
-  const ctx = canvas ? canvas.getContext("2d") : null;
+  const canvas = null; // background replaced by CSS — no canvas animation
+  const ctx = null;
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   if (canvas && ctx) {
